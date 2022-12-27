@@ -12,6 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.firebasepractise.R;
+import com.example.firebasepractise.databinding.FragmentServiceBinding;
+import com.example.firebasepractise.databinding.FragmentUserBinding;
+import com.example.firebasepractise.databinding.FragmentVenueUser2Binding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class UserContentContainerFragment extends Fragment {
@@ -21,7 +24,7 @@ public class UserContentContainerFragment extends Fragment {
 
     private String mParam1;
     private String mParam2;
-    private FragmentUserContentContainerBinding binding;
+    private FragmentUserBinding binding;
     private Context context;
 
     public UserContentContainerFragment() {
@@ -48,7 +51,7 @@ public class UserContentContainerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = FragmentUserContentContainerBinding.inflate(inflater, container, false);
+        binding = FragmentUserBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
         context = view.getContext();
 
@@ -61,7 +64,7 @@ public class UserContentContainerFragment extends Fragment {
                         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frameLayoutUser, ServiceUserFragment.newInstance(null, null)).commit();
                         break;
                     case R.id.venue:
-                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frameLayoutUser, ServiceUserFragment.newInstance(null, null)).commit();
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frameLayoutUser, VenueUserFragment.newInstance(null, null)).commit();
                         break;
                     case R.id.booked:
                         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frameLayoutUser, ServiceUserFragment.newInstance(null, null)).commit();

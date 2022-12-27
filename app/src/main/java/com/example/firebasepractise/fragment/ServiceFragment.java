@@ -14,6 +14,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.example.firebasepractise.Util.Utils;
+import com.example.firebasepractise.databinding.FragmentServiceBinding;
+import com.example.firebasepractise.databinding.FragmentUserBinding;
 import com.example.firebasepractise.databinding.FragmentVenueBinding;
 import com.example.firebasepractise.model.ServicePlanner;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -32,7 +34,7 @@ public class ServiceFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private FragmentVenueBinding binding;
+    private FragmentServiceBinding binding;
     private Context context;
     private List<String> spinnerList = new ArrayList<String>(Arrays.asList("Apple", "Banana", "Orange"));
     private FirebaseFirestore firebaseFirestore;
@@ -64,7 +66,7 @@ public class ServiceFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = FragmentVenueBinding.inflate(inflater, container, false);
+        binding = FragmentServiceBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
         context = view.getContext();
 

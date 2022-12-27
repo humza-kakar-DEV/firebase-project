@@ -82,8 +82,6 @@ public class UserFragment extends Fragment {
         ShowEventFragment showEventFragment = ShowEventFragment.newInstance(planList);
         BookedEventFragment bookedEventFragment = new BookedEventFragment();
 
-        planList.size();
-
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frameLayoutUser, showEventFragment).commit();
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override

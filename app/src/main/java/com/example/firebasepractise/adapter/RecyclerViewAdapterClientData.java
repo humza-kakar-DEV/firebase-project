@@ -13,20 +13,33 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.firebasepractise.R;
 import com.example.firebasepractise.model.ServicePlanner;
+import com.example.firebasepractise.model.Venue;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RecyclerViewAdapterClientData extends RecyclerView.Adapter<RecyclerViewAdapterClientData.MyRecyclerViewHolder> {
 
-    private List<ServicePlanner> planList = new ArrayList<>();
+    private List<ServicePlanner> serviceList = new ArrayList<>();
+    private List<Venue> venueList = new ArrayList<>();
+    private List<?> planList = new ArrayList<>();
     private Context context;
+    private String listType;
     private FragmentActivity fragmentActivity;
 
-    public RecyclerViewAdapterClientData(Context context, List<ServicePlanner> planList, FragmentActivity fragmentActivity) {
+    public RecyclerViewAdapterClientData(Context context, List<?> planList, String listType, FragmentActivity fragmentActivity) {
         this.context = context;
-        this.planList = planList;
         this.fragmentActivity = fragmentActivity;
+        this.listType = listType;
+        this.planList = planList;
+        switch (listType) {
+            case "service":
+                serviceList = (List<ServicePlanner>) planList;
+                break;
+            case "venue":
+                venueList = (List<Venue>) planList;
+                break;
+        }
     }
 
     @NonNull
@@ -39,20 +52,43 @@ public class RecyclerViewAdapterClientData extends RecyclerView.Adapter<Recycler
 
     @Override
     public void onBindViewHolder(@NonNull MyRecyclerViewHolder holder, int position) {
-        ServicePlanner servicePlanner = planList.get(position);
-        holder.titleTextView.setText(servicePlanner.getServiceChildCategory());
-        holder.descriptionTextView.setText(servicePlanner.getServiceDescription());
-        holder.book.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ServicePlanner servicePlannerClicked = planList.get(position);
-            }
-        });
+        switch (listType) {
+            case "service":
+                ServicePlanner servicePlanner = (ServicePlanner) serviceList.get(position);
+                holder.titleTextView.setText(servicePlanner.getServiceChildCategory());
+                holder.descriptionTextView.setText(servicePlanner.getServiceDescription());
+                holder.book.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ServicePlanner servicePlannerClicked = serviceList.get(position);
+                    }
+                });
+                break;
+            case "venue":
+                Venue venue = (Venue) venueList.get(position);
+                holder.titleTextView.setText(venue.getName());
+//                holder.descriptionTextView.setText(venueList.getServiceDescription());
+                holder.book.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Venue venueClicked = venueList.get(position);
+                    }
+                });
+                break;
+        }
     }
 
-    public void updateAdapter (List<ServicePlanner> planList) {
-        this.planList.clear();
-        this.planList.addAll(planList);
+    public void updateAdapter (List<?> planList, String listType) {
+        switch (listType) {
+            case "service":
+                this.serviceList.clear();
+                this.serviceList.addAll((List<ServicePlanner>) planList);
+                break;
+            case "venue":
+                this.venueList.clear();
+                this.venueList.addAll((List<Venue>) planList);
+                break;
+        }
         notifyDataSetChanged();
     }
 
@@ -87,7 +123,11 @@ public class RecyclerViewAdapterClientData extends RecyclerView.Adapter<Recycler
         }
     }
 
-    public interface RecyclerViewListener {
-        void onListen (String value);
+    public interface RecyclerViewClientService {
+        void onListenService (String value);
+    }
+
+    public interface RecyclerViewClientVenue {
+        void onListenVenue (String value);
     }
 }

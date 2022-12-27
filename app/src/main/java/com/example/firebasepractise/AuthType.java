@@ -16,6 +16,7 @@ import com.example.firebasepractise.Util.CommunicationInterface;
 import com.example.firebasepractise.Util.Utils;
 import com.example.firebasepractise.databinding.ActivityAuthTypeBinding;
 import com.example.firebasepractise.fragment.UserContentContainerFragment;
+import com.example.firebasepractise.fragment.VenueFragment;
 import com.google.android.material.appbar.MaterialToolbar;
 
 public class AuthType extends AppCompatActivity {
@@ -40,41 +41,13 @@ public class AuthType extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         Utils.StatusBarColour(this, R.color.custom_dark_background);
 
-//        plannerButton = (Button) findViewById(R.id.plannerButton);
-//        adminButton = (Button) findViewById(R.id.adminButton);
-//        userButton = (Button) findViewById(R.id.userButton);
         frameLayout = (FrameLayout) findViewById(R.id.frameLayout);
-
         venueUserFragment = UserContentContainerFragment.newInstance(null, null);
 
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(frameLayout.getId(), venueUserFragment.newInstance(null, null))
                 .commit();
-
-//        plannerButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                startActivity(new Intent(AuthType.this, loginActivity.class)
-//                        .putExtra(Constant.AUTH_TYPE, Constant.PLANNER_ROLE));
-//            }
-//        });
-//
-//        adminButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                startActivity(new Intent(AuthType.this, loginActivity.class)
-//                        .putExtra(Constant.AUTH_TYPE, Constant.ADMIN_ROLE));
-//            }
-//        });
-//
-//        userButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                startActivity(new Intent(AuthType.this, loginActivity.class)
-//                        .putExtra(Constant.AUTH_TYPE, Constant.USER_ROLE));
-//            }
-//        });
     }
 
 //    creating options

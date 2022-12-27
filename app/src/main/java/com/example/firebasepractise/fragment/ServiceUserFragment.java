@@ -7,15 +7,18 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.firebasepractise.AuthType;
+import com.example.firebasepractise.R;
 import com.example.firebasepractise.Util.CommunicationInterface;
 import com.example.firebasepractise.adapter.RecyclerViewAdapterClientData;
 import com.example.firebasepractise.adapter.RecyclerViewChipList;
+import com.example.firebasepractise.databinding.FragmentVenueUserBinding;
 import com.example.firebasepractise.model.ServicePlanner;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -30,21 +33,22 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class ServiceUserFragment extends Fragment implements RecyclerViewChipList.RecyclerViewListener {
+public class ServiceUserFragment extends Fragment implements RecyclerViewChipList.RecyclerChipViewServiceListener {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
     private String mParam1;
     private String mParam2;
-    private FragmentVenueUserBinding binding;
+//    private FragmentVenueUserBinding binding;
     private Context context;
+    private FragmentVenueUserBinding binding;
     private RecyclerViewChipList recyclerviewChipListAdapter;
     private List<String> defaultList = new ArrayList<String>(Arrays.asList("Affordable", "economical", "luxury"));
     private ArrayList<ServicePlanner> defaultContentList = new ArrayList<>();
     private FirebaseFirestore firebaseFirestore;
     private RecyclerViewAdapterClientData recyclerViewAdapterClientData;
-    private ServiceUserFragment serviceUserFragment;
+    private Fragment fragment;
 
     public static ServiceUserFragment newInstance(String param1, String param2) {
         ServiceUserFragment fragment = new ServiceUserFragment();
@@ -75,13 +79,13 @@ public class ServiceUserFragment extends Fragment implements RecyclerViewChipLis
         defaultConfiguration ();
 
         for (Fragment fragment : getActivity().getSupportFragmentManager().getFragments()) {
-            if (fragment instanceof RecyclerViewChipList.RecyclerViewListener) {
-                serviceUserFragment = (ServiceUserFragment) fragment;
+            if (fragment instanceof RecyclerViewChipList.RecyclerChipViewServiceListener) {
+                this.fragment = (Fragment) fragment;
             }
         }
 
 //      chips fragment  load adapter
-        recyclerviewChipListAdapter = new RecyclerViewChipList(view.getContext(), defaultList, getActivity(), serviceUserFragment);
+        recyclerviewChipListAdapter = new RecyclerViewChipList(view.getContext(), defaultList, getActivity(), fragment, "service");
         LinearLayoutManager layoutManagerChips = new LinearLayoutManager(context);
         layoutManagerChips.setOrientation(LinearLayoutManager.HORIZONTAL);
         binding.recyclerView.setLayoutManager(layoutManagerChips);
@@ -103,11 +107,11 @@ public class ServiceUserFragment extends Fragment implements RecyclerViewChipLis
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                    ServicePlanner servicePlanner = Objects.requireNonNull(documentSnapshot.toObject(ServicePlanner.class));
+                    ServicePlanner servicePlanner = documentSnapshot.toObject(ServicePlanner.class);
                     if (servicePlanner.getServiceParentCategory().equals("Travel") && servicePlanner.getServiceChildCategory().equals("luxury")) {
                         defaultContentList.add(servicePlanner);
                         //  load content fragment
-                        recyclerViewAdapterClientData = new RecyclerViewAdapterClientData(getContext(), defaultContentList, getActivity());
+                        recyclerViewAdapterClientData = new RecyclerViewAdapterClientData(getContext(), defaultContentList, "service", getActivity());
                         LinearLayoutManager layoutManagerContentList = new LinearLayoutManager(context);
                         layoutManagerContentList.setOrientation(LinearLayoutManager.VERTICAL);
                         binding.listRecyclerView.setLayoutManager(layoutManagerContentList);
@@ -116,6 +120,10 @@ public class ServiceUserFragment extends Fragment implements RecyclerViewChipLis
                 }
             }
         });
+    }
+    
+    public void testToast () {
+        Toast.makeText(context, "test value", Toast.LENGTH_SHORT).show();
     }
 
     public void getDataFromFirebase (String text) {
@@ -133,19 +141,14 @@ public class ServiceUserFragment extends Fragment implements RecyclerViewChipLis
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    recyclerViewAdapterClientData.updateAdapter(servicePlanners);
+                    recyclerViewAdapterClientData.updateAdapter(servicePlanners, "service");
                 }
             }
         });
     }
-    
-    public void toast () {
-        Toast.makeText(context, "vlalkjdflsflkjds", Toast.LENGTH_SHORT).show();
-    }
 
     @Override
-    public void chipText(String value) {
-//        Toast.makeText(context, value, Toast.LENGTH_SHORT).show();
+    public void chipTextService(String value) {
         getDataFromFirebase(value);
     }
 }
