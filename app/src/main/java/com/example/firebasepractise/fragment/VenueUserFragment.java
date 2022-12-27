@@ -93,7 +93,7 @@ public class VenueUserFragment extends Fragment implements RecyclerViewChipList.
                 this.fragment = (Fragment) fragment;
             }
         }
-        
+
         return view;
     }
 

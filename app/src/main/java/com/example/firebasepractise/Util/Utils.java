@@ -17,6 +17,7 @@ import java.util.List;
 
 public class Utils {
 
+    public static List<String> roles = new ArrayList<>(Arrays.asList("PlannerRole", "AdminRole", "UserRole"));
     public static List<String> parentCategory = new ArrayList<>(Arrays.asList("Travel", "Catering", "Decor", "DJ"));
     public static List<String> travelItems = new ArrayList<>(Arrays.asList("Affordable", "economical", "luxury"));
     public static List<String> cateringItems = new ArrayList<>(Arrays.asList("Desert", "Dinner", "Break fast"));

@@ -1,4 +1,4 @@
-package com.example.firebasepractise.fragment;
+package com.example.firebasepractise.fragment.planner;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import com.example.firebasepractise.Util.Utils;
 import com.example.firebasepractise.databinding.FragmentServiceBinding;
-import com.example.firebasepractise.databinding.FragmentUserBinding;
 import com.example.firebasepractise.databinding.FragmentVenueBinding;
 import com.example.firebasepractise.model.ServicePlanner;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -31,7 +30,6 @@ public class ServiceFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     private FragmentServiceBinding binding;
@@ -71,11 +69,6 @@ public class ServiceFragment extends Fragment {
         context = view.getContext();
 
         firebaseFirestore = FirebaseFirestore.getInstance();
-
-//        spinner adpater code
-//        1. create adapter
-//        2. create list
-//        3. spinner view set adapter to view
 
         binding.spinnerChildCategory.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, new ArrayList<>(Arrays.asList("select category"))));
         binding.spinnerParentCategory.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, Utils.parentCategory));

@@ -1,4 +1,4 @@
-package com.example.firebasepractise.fragment;
+package com.example.firebasepractise.fragment.planner;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,10 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.firebasepractise.R;
-import com.example.firebasepractise.databinding.FragmentUserBinding;
 import com.example.firebasepractise.databinding.FragmentVenueBinding;
-import com.example.firebasepractise.model.ServicePlanner;
 import com.example.firebasepractise.model.Venue;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
