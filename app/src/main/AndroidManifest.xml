@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.firebasepractise">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -14,7 +16,16 @@
         android:theme="@style/Theme.FirebasePractise"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".loginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainLayout"
+            android:exported="false" />
+        <activity
+            android:name=".AuthType"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

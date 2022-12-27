@@ -5,27 +5,32 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.firebasepractise.R;
 import com.example.firebasepractise.model.Plan;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyRecyclerViewHolder> {
+public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<AdminRecyclerViewAdapter.MyRecyclerViewHolder> {
 
     private List<Plan> planList = new ArrayList<>();
     private Context context;
     private RecyclerViewSwitchListener recyclerViewSwitchListener;
     private FragmentActivity fragmentActivity;
 
-    public RecyclerViewAdapter(Context context, List<Plan> planList, FragmentActivity fragmentActivity) {
+    public AdminRecyclerViewAdapter(Context context, List<Plan> planList, FragmentActivity fragmentActivity) {
         this.context = context;
         this.planList = planList;
         this.fragmentActivity = fragmentActivity;
@@ -43,22 +48,40 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(@NonNull MyRecyclerViewHolder holder, int position) {
         Plan plan = planList.get(position);
-        holder.textView.setText(plan.getTitle());
+        holder.titleTextView.setText(plan.getTitle());
+        holder.dateTextView.setText(plan.getDate());
+        holder.descriptionTextView.setText(plan.getDescription());
+        Glide
+                .with(context)
+                .load(plan.getImageUrl())
+                .centerCrop()
+                .placeholder(R.drawable.ic_baseline_cloud_upload_24)
+                .into(holder.imageView);
+
         if (plan.isApproved()) {
-            holder.aSwitch.setChecked(true);
+            holder.yes.setChecked(true);
+            holder.no.setChecked(false);
         } else {
-            holder.aSwitch.setChecked(false);
+            holder.yes.setChecked(false);
+            holder.no.setChecked(true);
         }
-        holder.submitButton.setOnClickListener(new View.OnClickListener() {
+        holder.yes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Plan clickedPlan = planList.get(position);
-                if (holder.aSwitch.isChecked()) {
+                if (holder.yes.isChecked()) {
                     clickedPlan.setApproved(true);
-                    recyclerViewSwitchListener.onListen(clickedPlan);
-                } else {
+                    recyclerViewSwitchListener.onListen(plan);
+                }
+            }
+        });
+        holder.no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Plan clickedPlan = planList.get(position);
+                if (holder.no.isChecked()) {
                     clickedPlan.setApproved(false);
-                    recyclerViewSwitchListener.onListen(clickedPlan);
+                    recyclerViewSwitchListener.onListen(plan);
                 }
             }
         });
@@ -81,16 +104,22 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public class MyRecyclerViewHolder extends RecyclerView.ViewHolder {
 
-        TextView textView;
-        Switch aSwitch;
-        Button submitButton;
+        TextView titleTextView, descriptionTextView, dateTextView;
+        RadioGroup radioGroup;
+        RadioButton yes;
+        RadioButton no;
+        ImageView imageView;
 
         public MyRecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            textView = itemView.findViewById(R.id.textView);
-            aSwitch = itemView.findViewById(R.id.switchView);
-            submitButton = itemView.findViewById(R.id.submitButton);
+            imageView = itemView.findViewById(R.id.imageView);
+            titleTextView = itemView.findViewById(R.id.titleTextView);
+            descriptionTextView = itemView.findViewById(R.id.descriptionTextView);
+            dateTextView = itemView.findViewById(R.id.dateTextView);
+            radioGroup = itemView.findViewById(R.id.toggle);
+            yes = itemView.findViewById(R.id.yes);
+            no = itemView.findViewById(R.id.no);
         }
     }
 

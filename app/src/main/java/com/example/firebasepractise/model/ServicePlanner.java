@@ -1,6 +1,6 @@
 package com.example.firebasepractise.model;
 
-public class Service {
+public class ServicePlanner {
 
     String serviceDescription;
     String serviceName;
@@ -8,7 +8,11 @@ public class Service {
     String serviceChildCategory;
     int servicePrice;
 
-    public Service(String serviceDescription, String serviceName, String serviceParentCategory, String serviceChildCategory, int servicePrice) {
+    public ServicePlanner () {
+
+    }
+
+    public ServicePlanner(String serviceDescription, String serviceName, String serviceParentCategory, String serviceChildCategory, int servicePrice) {
         this.serviceDescription = serviceDescription;
         this.serviceName = serviceName;
         this.serviceParentCategory = serviceParentCategory;

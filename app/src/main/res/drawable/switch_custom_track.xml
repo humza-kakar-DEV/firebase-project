@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-
-</selector>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+        android:visible="true"
+        android:dither="true"
+        android:useLevel="false"
+        <solid android:color="@color/custom_dark_background"/>
+        <corners
+            android:radius="20dp"/>
+        <size
+            android:width="100dp"
+            android:height="5dp" />
+<!--        <stroke android:color="@color/white"-->
+<!--            android:width="4dp"/>-->
+</shape>

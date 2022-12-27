@@ -1,5 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/drawable/card_background.xml" value="0.141" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/drawable/ic_baseline_cloud_upload_24.xml" value="0.182" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/drawable/ic_baseline_miscellaneous_services_24.xml" value="0.182" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/drawable/ic_baseline_sort_24.xml" value="0.1565" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/drawable/menu_select.xml" value="0.1855" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/drawable/outline_background.xml" value="0.1595" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/drawable/pink_out_line.xml" value="0.1525" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/drawable/switch_background.xml" value="0.173" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/drawable/switch_custom_thumb.xml" value="0.182" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/drawable/switch_custom_track.xml" value="0.173" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/drawable/toggle_widget_background.xml" value="0.1525" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/layout/activity_auth_type.xml" value="0.22" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/layout/activity_login.xml" value="0.25" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/layout/activity_main_layout.xml" value="0.16666666666666666" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/layout/activity_register.xml" value="0.22" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/layout/admin_recycler_view_layout.xml" value="0.33" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/layout/fragment_admin.xml" value="0.18072916666666666" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/layout/fragment_booked_event.xml" value="0.18072916666666666" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/layout/fragment_planner.xml" value="0.25" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/layout/fragment_show_event.xml" value="0.18072916666666666" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/layout/fragment_user.xml" value="0.18072916666666666" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/layout/fragment_user_content_container.xml" value="0.18072916666666666" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/layout/fragment_venue.xml" value="0.18072916666666666" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/layout/fragment_venue_user.xml" value="0.2" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/layout/full_screen_image_layout.xml" value="0.18072916666666666" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/layout/outline_background.xml" value="0.18072916666666666" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/layout/recyclerview_chip_background.xml" value="0.22" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/layout/user_recycler_view_layout.xml" value="0.25" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/menu/bottom_nav_menu.xml" value="0.25" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/menu/tab_menu_options.xml" value="0.33" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1625" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1855" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>

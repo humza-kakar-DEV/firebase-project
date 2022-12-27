@@ -1,14 +1,25 @@
 package com.example.firebasepractise.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.firebasepractise.R;
+import com.example.firebasepractise.Util.Constant;
+import com.example.firebasepractise.adapter.UserRecyclerViewAdapter;
+import com.example.firebasepractise.databinding.FragmentShowEventBinding;
+import com.example.firebasepractise.databinding.FragmentUserBinding;
+import com.example.firebasepractise.model.Plan;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,24 +37,19 @@ public class ShowEventFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private List<Plan> planList = new ArrayList<>();
+    public UserRecyclerViewAdapter userRecyclerViewAdapter;
+    private FragmentShowEventBinding binding;
+    private Context context;
+
     public ShowEventFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ShowEventFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ShowEventFragment newInstance(String param1, String param2) {
+    public static ShowEventFragment newInstance(List<Plan> planList) {
         ShowEventFragment fragment = new ShowEventFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putSerializable(ARG_PARAM1, (Serializable) planList);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,8 +58,7 @@ public class ShowEventFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            planList = (List<Plan>) getArguments().getSerializable(ARG_PARAM1);
         }
     }
 
@@ -61,6 +66,15 @@ public class ShowEventFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_show_event, container, false);
+        binding = FragmentShowEventBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
+        context = view.getContext();
+
+        planList.size();
+        userRecyclerViewAdapter = new UserRecyclerViewAdapter(view.getContext(), planList, getActivity());
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        binding.recyclerView.setAdapter(userRecyclerViewAdapter);
+
+        return view;
     }
 }

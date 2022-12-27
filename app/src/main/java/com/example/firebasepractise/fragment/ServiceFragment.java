@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class VenueFragment extends Fragment {
+public class ServiceFragment extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -40,11 +40,11 @@ public class VenueFragment extends Fragment {
     private String parentCategory = "Travel";
     private String childCategory = "Affordable";
 
-    public VenueFragment() {
+    public ServiceFragment() {
     }
 
-    public static VenueFragment newInstance(String param1, String param2) {
-        VenueFragment fragment = new VenueFragment();
+    public static ServiceFragment newInstance(String param1, String param2) {
+        ServiceFragment fragment = new ServiceFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);

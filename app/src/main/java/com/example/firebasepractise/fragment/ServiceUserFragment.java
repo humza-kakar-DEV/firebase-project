@@ -1,6 +1,5 @@
 package com.example.firebasepractise.fragment;
 
-import android.app.Service;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -8,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +14,9 @@ import android.widget.Toast;
 
 import com.example.firebasepractise.AuthType;
 import com.example.firebasepractise.Util.CommunicationInterface;
-import com.example.firebasepractise.Util.Constant;
 import com.example.firebasepractise.adapter.RecyclerViewAdapterClientData;
 import com.example.firebasepractise.adapter.RecyclerViewChipList;
-import com.example.firebasepractise.databinding.FragmentVenueUserBinding;
-import com.example.firebasepractise.model.Plan;
 import com.example.firebasepractise.model.ServicePlanner;
-import com.example.firebasepractise.model.Venue;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -36,7 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class VenueUserFragment extends Fragment implements RecyclerViewChipList.RecyclerViewListener {
+public class ServiceUserFragment extends Fragment implements RecyclerViewChipList.RecyclerViewListener {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -50,10 +44,10 @@ public class VenueUserFragment extends Fragment implements RecyclerViewChipList.
     private ArrayList<ServicePlanner> defaultContentList = new ArrayList<>();
     private FirebaseFirestore firebaseFirestore;
     private RecyclerViewAdapterClientData recyclerViewAdapterClientData;
-    private VenueUserFragment venueUserFragment;
+    private ServiceUserFragment serviceUserFragment;
 
-    public static VenueUserFragment newInstance(String param1, String param2) {
-        VenueUserFragment fragment = new VenueUserFragment();
+    public static ServiceUserFragment newInstance(String param1, String param2) {
+        ServiceUserFragment fragment = new ServiceUserFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -82,12 +76,12 @@ public class VenueUserFragment extends Fragment implements RecyclerViewChipList.
 
         for (Fragment fragment : getActivity().getSupportFragmentManager().getFragments()) {
             if (fragment instanceof RecyclerViewChipList.RecyclerViewListener) {
-                venueUserFragment = (VenueUserFragment) fragment;
+                serviceUserFragment = (ServiceUserFragment) fragment;
             }
         }
 
 //      chips fragment  load adapter
-        recyclerviewChipListAdapter = new RecyclerViewChipList(view.getContext(), defaultList, getActivity(), venueUserFragment);
+        recyclerviewChipListAdapter = new RecyclerViewChipList(view.getContext(), defaultList, getActivity(), serviceUserFragment);
         LinearLayoutManager layoutManagerChips = new LinearLayoutManager(context);
         layoutManagerChips.setOrientation(LinearLayoutManager.HORIZONTAL);
         binding.recyclerView.setLayoutManager(layoutManagerChips);

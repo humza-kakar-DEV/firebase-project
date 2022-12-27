@@ -1,2 +1,5 @@
-package com.example.firebasepractise.model;public class Venue {
+package com.example.firebasepractise.model;
+
+public class Venue {
+
 }
