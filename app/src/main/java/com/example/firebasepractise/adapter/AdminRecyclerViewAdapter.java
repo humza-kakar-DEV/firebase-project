@@ -1,5 +1,6 @@
 package com.example.firebasepractise.adapter;
 
+import android.app.Service;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,23 +19,37 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.firebasepractise.R;
+import com.example.firebasepractise.fragment.AdminFragment;
 import com.example.firebasepractise.model.Plan;
+import com.example.firebasepractise.model.ServicePlanner;
+import com.example.firebasepractise.model.Venue;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<AdminRecyclerViewAdapter.MyRecyclerViewHolder> {
 
-    private List<Plan> planList = new ArrayList<>();
+    private List<ServicePlanner> servicePlannerList = new ArrayList<>();
+    private List<Venue> venueList = new ArrayList<>();
     private Context context;
-    private RecyclerViewSwitchListener recyclerViewSwitchListener;
+    private String listType;
+    private List<?> planList = new ArrayList<>();
+    private AdminFragment adminFragment;
     private FragmentActivity fragmentActivity;
 
-    public AdminRecyclerViewAdapter(Context context, List<Plan> planList, FragmentActivity fragmentActivity) {
+    public AdminRecyclerViewAdapter(Context context, List<?> planList, String listType, AdminFragment adminFragment) {
         this.context = context;
+        this.listType = listType;
         this.planList = planList;
-        this.fragmentActivity = fragmentActivity;
-        recyclerViewSwitchListener = (RecyclerViewSwitchListener) fragmentActivity;
+        this.adminFragment = adminFragment;
+        switch (listType) {
+            case "Service":
+                servicePlannerList = (List<ServicePlanner>) planList;
+                break;
+            case "Venue":
+                venueList = (List<Venue>) planList;
+                break;
+        }
     }
 
     @NonNull
@@ -47,41 +62,87 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<AdminRecycler
 
     @Override
     public void onBindViewHolder(@NonNull MyRecyclerViewHolder holder, int position) {
-        Plan plan = planList.get(position);
-        holder.titleTextView.setText(plan.getTitle());
-        holder.dateTextView.setText(plan.getDate());
-        holder.descriptionTextView.setText(plan.getDescription());
-        Glide
-                .with(context)
-                .load(plan.getImageUrl())
-                .centerCrop()
-                .placeholder(R.drawable.ic_baseline_cloud_upload_24)
-                .into(holder.imageView);
-
-        if (plan.isApproved()) {
-            holder.yes.setChecked(true);
-            holder.no.setChecked(false);
-        } else {
-            holder.yes.setChecked(false);
-            holder.no.setChecked(true);
+        switch (listType) {
+            case "Service":
+                ServicePlanner servicePlanner = servicePlannerList.get(position);
+                holder.titleTextView.setText(servicePlanner.getServiceName());
+                holder.descriptionTextView.setText(servicePlanner.getServiceParentCategory());
+                holder.dateTextView.setText(servicePlanner.getServiceChildCategory());
+                if (servicePlanner.isApproved()) {
+                    holder.yes.setChecked(true);
+                    holder.no.setChecked(false);
+                } else {
+                    holder.yes.setChecked(false);
+                    holder.no.setChecked(true);
+                }
+//                Glide
+//                        .with(context)
+//                        .load(servicePlanner.getImageUrl())
+//                        .centerCrop()
+//                        .placeholder(R.drawable.ic_baseline_cloud_upload_24)
+//                        .into(holder.imageView);
+                break;
+            case "Venue":
+                Venue venue = venueList.get(position);
+                holder.titleTextView.setText(venue.getName());
+                holder.descriptionTextView.setText(venue.getAddress());
+                holder.dateTextView.setText(venue.getWashRooms());
+                if (venue.getApproved()) {
+                    holder.yes.setChecked(true);
+                    holder.no.setChecked(false);
+                } else {
+                    holder.yes.setChecked(false);
+                    holder.no.setChecked(true);
+                }
+                break;
         }
+
+//        button clicked
         holder.yes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Plan clickedPlan = planList.get(position);
-                if (holder.yes.isChecked()) {
-                    clickedPlan.setApproved(true);
-                    recyclerViewSwitchListener.onListen(plan);
+                switch (listType) {
+                    case "Service":
+                        ServicePlanner servicePlanner = servicePlannerList.get(position);
+                        if (holder.yes.isChecked()) {
+                            servicePlanner.setApproved(true);
+                            adminFragment.servicePlannerListener(servicePlanner);
+                        }
+                        break;
+                    case "Venue":
+                        Venue venue = venueList.get(position);
+                        if (holder.yes.isChecked()) {
+                            venue.setApproved(true);
+                            adminFragment.venueListener(venue);
+                        }
+                        break;
                 }
+//                ServicePlanner clickedPlan = planList.get(position);
+//                if (holder.yes.isChecked()) {
+//                    clickedPlan.setApproved(true);
+//                    recyclerViewSwitchListener.onListen(plan);
+//                }
             }
         });
+
         holder.no.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Plan clickedPlan = planList.get(position);
-                if (holder.no.isChecked()) {
-                    clickedPlan.setApproved(false);
-                    recyclerViewSwitchListener.onListen(plan);
+                switch (listType) {
+                    case "Service":
+                        ServicePlanner servicePlanner = servicePlannerList.get(position);
+                        if (holder.no.isChecked()) {
+                            servicePlanner.setApproved(false);
+                            adminFragment.servicePlannerListener(servicePlanner);
+                        }
+                        break;
+                    case "Venue":
+                        Venue venue = venueList.get(position);
+                        if (holder.no.isChecked()) {
+                            venue.setApproved(false);
+                            adminFragment.venueListener(venue);
+                        }
+                        break;
                 }
             }
         });
@@ -123,7 +184,13 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<AdminRecycler
         }
     }
 
-    public interface RecyclerViewSwitchListener {
-        void onListen (Plan plan);
+    public interface RecyclerViewAdminListener {
+        void servicePlannerListener(ServicePlanner servicePlanner);
+
+        void venueListener(Venue venue);
     }
+
+//    public interface RecyclerViewSwitchListener {
+//        void onListen (Plan plan);
+//    }
 }

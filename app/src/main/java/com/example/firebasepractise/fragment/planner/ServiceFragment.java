@@ -1,29 +1,51 @@
 package com.example.firebasepractise.fragment.planner;
 
+import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.example.firebasepractise.AuthType;
+import com.example.firebasepractise.R;
+import com.example.firebasepractise.Util.Constant;
 import com.example.firebasepractise.Util.Utils;
 import com.example.firebasepractise.databinding.FragmentServiceBinding;
-import com.example.firebasepractise.databinding.FragmentVenueBinding;
 import com.example.firebasepractise.model.ServicePlanner;
+import com.example.firebasepractise.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.UploadTask;
 
+import java.net.UnknownServiceException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicMarkableReference;
 
 public class ServiceFragment extends Fragment {
 
@@ -39,6 +61,17 @@ public class ServiceFragment extends Fragment {
 
     private String parentCategory = "Travel";
     private String childCategory = "Affordable";
+    private String nameInput;
+    private String descriptionInput;
+    private int priceInput;
+    private FirebaseAuth firebaseAuth;
+    String email;
+    String phoneNumber;
+    private String date;
+    private Uri fragmentImageUri;
+    private ServicePlanner servicePlanner;
+    private FirebaseStorage firebaseStorage;
+    private String imageUrl;
 
     public ServiceFragment() {
     }
@@ -68,6 +101,8 @@ public class ServiceFragment extends Fragment {
         View view = binding.getRoot();
         context = view.getContext();
 
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseStorage = FirebaseStorage.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
 
         binding.spinnerChildCategory.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, new ArrayList<>(Arrays.asList("select category"))));
@@ -114,24 +149,152 @@ public class ServiceFragment extends Fragment {
             }
         });
 
-        binding.createButton.setOnClickListener(new View.OnClickListener() {
+        binding.selectDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String name = binding.name.getText().toString();
-                String description = binding.description.getText().toString();
-//                int price = Integer.parseInt(binding.price.getText().toString());
-                ServicePlanner servicePlanner = new ServicePlanner(description, name, parentCategory, childCategory, 112);
-                firebaseFirestore.collection("Service").document().set(servicePlanner).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(context, "data saved", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                MaterialDatePicker.Builder materialDateBuilder = MaterialDatePicker.Builder.datePicker();
+                materialDateBuilder.setTitleText("SELECT A DATE");
+                final MaterialDatePicker materialDatePicker = materialDateBuilder.build();
+
+                materialDatePicker.show(getActivity().getSupportFragmentManager(), "MATERIAL_DATE_PICKER");
+
+                materialDatePicker.addOnPositiveButtonClickListener(
+                        new MaterialPickerOnPositiveButtonClickListener() {
+                            @SuppressLint("SetTextI18n")
+                            @Override
+                            public void onPositiveButtonClick(Object selection) {
+                                date = materialDatePicker.getHeaderText();
+                                binding.selectDate.setText(date);
+                            }
+                        });
             }
         });
 
+        binding.selectImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                requireActivity().startActivityForResult(intent, 112);
+            }
+        });
+
+        ((AuthType) getActivity()).imageUriInterfaceReference(new AuthType.ImageUriInterface() {
+            @Override
+            public void imageUri(Uri imageUri) {
+                fragmentImageUri = imageUri;
+                Glide
+                        .with(context)
+                        .load(imageUri)
+                        .centerCrop()
+                        .placeholder(R.drawable.ic_baseline_cloud_upload_24)
+                        .into(binding.imageView);
+            }
+        });
+
+        binding.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Dialog dialog = new Dialog(context, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+                dialog.setContentView(R.layout.full_screen_image_layout);
+                ImageView imageView = (ImageView) dialog.findViewById(R.id.imageViewFull);
+                imageView.setImageURI(fragmentImageUri);
+                dialog.show();
+            }
+        });
+
+        binding.createButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!validateNameField() | !validateDescriptionField() | !validatePriceField()) {
+                    return;
+                }
+//                uploading image
+                firebaseStorage.getReference("uploads").child(System.currentTimeMillis() + "." + Utils.getMimeType(context, fragmentImageUri)).putFile(fragmentImageUri)
+                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                taskSnapshot.getStorage().getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Uri> task) {
+                                        imageUrl = task.getResult().toString();
+                                    }
+                                });
+                            }
+                        }).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    firebaseFirestore.collection("PlannerRole").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                            for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
+                                                User user = queryDocumentSnapshot.toObject(User.class);
+                                                if (user.getName().equals(firebaseAuth.getCurrentUser().getEmail())) {
+                                                    email = user.getName();
+                                                    phoneNumber = user.getPhoneNumber();
+                                                }
+                                            }
+                                        }
+                                    }).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                servicePlanner = new ServicePlanner(descriptionInput, nameInput, parentCategory, childCategory, priceInput, false, firebaseFirestore.collection("Service").document().getId(), email, phoneNumber, date, imageUrl);
+                                                firebaseFirestore.collection("Service").document(servicePlanner.getDocumentId()).set(servicePlanner).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            Toast.makeText(context, "data saved", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        });
+            }
+        });
         return view;
+    }
+
+    private boolean validateNameField() {
+        nameInput = binding.textInputName.getEditText().getText().toString().trim();
+        if (nameInput.isEmpty()) {
+            binding.textInputName.setError("Field can't be empty");
+            return false;
+        }
+        if (binding.textInputName.isErrorEnabled()) {
+            binding.textInputName.setErrorEnabled(false);
+        }
+        return true;
+    }
+
+    private boolean validateDescriptionField() {
+        descriptionInput = binding.textInputDescription.getEditText().getText().toString().trim();
+        if (descriptionInput.isEmpty()) {
+            binding.textInputDescription.setError("Field can't be empty");
+            return false;
+        }
+        if (binding.textInputDescription.isErrorEnabled()) {
+            binding.textInputDescription.setErrorEnabled(false);
+        }
+        return true;
+    }
+
+    public boolean validatePriceField() {
+        String priceCheck = binding.textInputPrice.getEditText().getText().toString().trim();
+        if (priceCheck.isEmpty()) {
+            binding.textInputPrice.setError("Field can't be empty");
+            return false;
+        }
+        if (binding.textInputPrice.isErrorEnabled()) {
+            binding.textInputPrice.setErrorEnabled(false);
+        }
+        priceInput = Integer.parseInt(priceCheck);
+        return true;
     }
 }

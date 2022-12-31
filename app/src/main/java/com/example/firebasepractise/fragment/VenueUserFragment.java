@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.firebasepractise.AuthType;
 import com.example.firebasepractise.R;
@@ -19,11 +20,13 @@ import com.example.firebasepractise.adapter.RecyclerViewChipList;
 import com.example.firebasepractise.databinding.FragmentVenueBinding;
 import com.example.firebasepractise.databinding.FragmentVenueUser2Binding;
 import com.example.firebasepractise.databinding.FragmentVenueUserBinding;
+import com.example.firebasepractise.model.Booked;
 import com.example.firebasepractise.model.ServicePlanner;
 import com.example.firebasepractise.model.Venue;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -38,7 +41,8 @@ import java.util.List;
  * Use the {@link VenueUserFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class VenueUserFragment extends Fragment implements RecyclerViewChipList.RecyclerChipVenueListener {
+public class VenueUserFragment extends Fragment implements RecyclerViewChipList.RecyclerChipVenueListener
+        , RecyclerViewAdapterClientData.RecyclerViewClientVenue {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -55,6 +59,7 @@ public class VenueUserFragment extends Fragment implements RecyclerViewChipList.
     private RecyclerViewAdapterClientData recyclerViewAdapterClientData;
     private VenueUserFragment venueUserFragment;
     private Fragment fragment;
+    private FirebaseAuth firebaseAuth;
 
     public VenueUserFragment() {
     }
@@ -85,7 +90,7 @@ public class VenueUserFragment extends Fragment implements RecyclerViewChipList.
         View view = binding.getRoot();
         context = view.getContext();
 
-        //        default configuration when fragment will load
+        // default configuration when fragment will load
         defaultConfiguration();
 
         for (Fragment fragment : getActivity().getSupportFragmentManager().getFragments()) {
@@ -97,11 +102,10 @@ public class VenueUserFragment extends Fragment implements RecyclerViewChipList.
         return view;
     }
 
-
     public void defaultConfiguration() {
-
-//        firebase firestore
+//        firebase fire store
         firebaseFirestore = FirebaseFirestore.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
 
 //        loading chips data
         firebaseFirestore.collection("Venue").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -122,16 +126,23 @@ public class VenueUserFragment extends Fragment implements RecyclerViewChipList.
             }
         });
 
-//        loading default data
+//        loading real content data
         firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseFirestore.collection("Venue").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                     Venue venue = documentSnapshot.toObject(Venue.class);
-                    defaultContentList.add(venue);
-                    //  load content fragment
-                    recyclerViewAdapterClientData = new RecyclerViewAdapterClientData(getContext(), defaultContentList, "venue", getActivity());
+                    if (venue.getApproved() == false) {
+                        defaultContentList.add(venue);
+                    }
+                }
+            }
+        }).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    recyclerViewAdapterClientData = new RecyclerViewAdapterClientData(getContext(), defaultContentList, "venue", fragment, getActivity());
                     LinearLayoutManager layoutManagerContentList = new LinearLayoutManager(context);
                     layoutManagerContentList.setOrientation(LinearLayoutManager.VERTICAL);
                     binding.listRecyclerView.setLayoutManager(layoutManagerContentList);
@@ -147,7 +158,8 @@ public class VenueUserFragment extends Fragment implements RecyclerViewChipList.
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
-                    if (queryDocumentSnapshot.toObject(Venue.class).getName().equals(text)) {
+                    Venue venue = queryDocumentSnapshot.toObject(Venue.class);
+                    if (venue.getName().equals(text) && venue.getApproved() == false) {
                         venueList.add(queryDocumentSnapshot.toObject(Venue.class));
                     }
                 }
@@ -155,7 +167,7 @@ public class VenueUserFragment extends Fragment implements RecyclerViewChipList.
         }).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
+                if (task.isSuccessful() && !venueList.isEmpty()) {
                     recyclerViewAdapterClientData.updateAdapter(venueList, "venue");
                 }
             }
@@ -165,5 +177,11 @@ public class VenueUserFragment extends Fragment implements RecyclerViewChipList.
     @Override
     public void chipTextVenue(String value) {
         getDataFromFirebase(value);
+    }
+
+    @Override
+    public void onBookedVenue(Venue venue) {
+//        store booking data
+        firebaseFirestore.collection("Booked").document().set(new Booked(venue.getEmail(), venue.getPhoneNumber(), firebaseAuth.getCurrentUser().getEmail(), "venue", venue.getName(), venue.getAddress(), venue.getSize(), venue.getPerHourRent(), venue.getNoGuests(), venue.getAttachedRooms(), venue.getWashRooms()));
     }
 }

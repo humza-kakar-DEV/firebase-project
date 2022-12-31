@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class MainLayout extends AppCompatActivity implements AdminRecyclerViewAdapter.RecyclerViewSwitchListener, UserRecyclerViewAdapter.RecyclerViewSwitchListener {
+public class MainLayout extends AppCompatActivity implements UserRecyclerViewAdapter.RecyclerViewSwitchListener {
 
     FrameLayout frameLayout;
     List<Plan> planList = new ArrayList<>();
@@ -75,10 +75,10 @@ public class MainLayout extends AppCompatActivity implements AdminRecyclerViewAd
                         for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
                             planList.add(queryDocumentSnapshot.toObject(Plan.class));
                         }
-                        getSupportFragmentManager()
-                                .beginTransaction()
-                                .add(frameLayout.getId(), AdminFragment.newInstance(planList))
-                                .commit();
+//                        getSupportFragmentManager()
+//                                .beginTransaction()
+//                                .add(frameLayout.getId(), AdminFragment.newInstance())
+//                                .commit();
                     }
                 });
                 break;
@@ -102,21 +102,21 @@ public class MainLayout extends AppCompatActivity implements AdminRecyclerViewAd
         }
     }
 
-    @Override
-    public void onListen(Plan plan) {
-        firebaseFirestore.collection(Constant.PLANS_TAG).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
-                    if (plan.getDocumentId().equals(queryDocumentSnapshot.getId())) {
-                        Map<String, Object> map = new HashMap<>();
-                        map.put("approved", plan.isApproved());
-                        firebaseFirestore.collection(Constant.PLANS_TAG).document(plan.getDocumentId()).update(map);
-                    }
-                }
-            }
-        });
-    }
+//    @Override
+//    public void onListen(Plan plan) {
+//        firebaseFirestore.collection(Constant.PLANS_TAG).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//            @Override
+//            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
+//                    if (plan.getDocumentId().equals(queryDocumentSnapshot.getId())) {
+//                        Map<String, Object> map = new HashMap<>();
+//                        map.put("approved", plan.isApproved());
+//                        firebaseFirestore.collection(Constant.PLANS_TAG).document(plan.getDocumentId()).update(map);
+//                    }
+//                }
+//            }
+//        });
+//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

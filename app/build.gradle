@@ -39,10 +39,13 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:24.4.1'
     implementation 'com.google.firebase:firebase-auth:21.1.0'
     implementation 'com.google.firebase:firebase-storage:20.1.0'
+    implementation 'androidx.navigation:navigation-ui:2.5.3'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
     implementation 'com.google.android.material:material:1.1.0-alpha06'
+
+    implementation 'com.google.android.gms:play-services-auth:20.4.0'
 
     //    rounded image view library github
     implementation 'com.makeramen:roundedimageview:2.3.0'
@@ -50,4 +53,5 @@ dependencies {
     //    glide
     implementation 'com.github.bumptech.glide:glide:4.14.2'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
+
 }

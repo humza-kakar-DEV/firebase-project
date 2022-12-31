@@ -3,11 +3,17 @@
 
     <item
         android:id="@+id/servicePlanner"
-        android:title="Create Service"
+        android:title="Services"
         android:icon="@drawable/ic_baseline_miscellaneous_services_24" />
+
     <item
         android:id="@+id/venue"
-        android:title="Create Venue"
+        android:title="Venues"
         android:icon="@drawable/ic_baseline_event_available_24" />
+
+    <item
+        android:id="@+id/userBooked"
+        android:title="Booked"
+        android:icon="@drawable/ic_baseline_bookmark_added_24" />
 
 </menu>

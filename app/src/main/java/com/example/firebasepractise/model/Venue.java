@@ -9,12 +9,18 @@ public class Venue {
     private String noGuests;
     private String attachedRooms;
     private String washRooms;
+    Boolean approved;
+    private String documentId;
+    String email;
+    String phoneNumber;
+    String imageUrl;
+    String date;
 
     public Venue () {
 
     }
 
-    public Venue(String name, String perHourRent, String address, String size, String noGuests, String attachedRooms, String washRooms) {
+    public Venue(String name, String perHourRent, String address, String size, String noGuests, String attachedRooms, String washRooms, Boolean approved, String documentId, String email, String phoneNumber, String imageUrl, String date) {
         this.name = name;
         this.perHourRent = perHourRent;
         this.address = address;
@@ -22,6 +28,60 @@ public class Venue {
         this.noGuests = noGuests;
         this.attachedRooms = attachedRooms;
         this.washRooms = washRooms;
+        this.approved = approved;
+        this.documentId = documentId;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.imageUrl = imageUrl;
+        this.date = date;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getDocumentId() {
+        return documentId;
+    }
+
+    public void setDocumentId(String documentId) {
+        this.documentId = documentId;
+    }
+
+    public Boolean getApproved() {
+        return approved;
+    }
+
+    public void setApproved(Boolean approved) {
+        this.approved = approved;
     }
 
     public String getPerHourRent() {

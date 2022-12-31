@@ -19,10 +19,12 @@ import com.example.firebasepractise.Util.CommunicationInterface;
 import com.example.firebasepractise.adapter.RecyclerViewAdapterClientData;
 import com.example.firebasepractise.adapter.RecyclerViewChipList;
 import com.example.firebasepractise.databinding.FragmentVenueUserBinding;
+import com.example.firebasepractise.model.Booked;
 import com.example.firebasepractise.model.ServicePlanner;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -33,14 +35,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class ServiceUserFragment extends Fragment implements RecyclerViewChipList.RecyclerChipViewServiceListener {
+public class ServiceUserFragment extends Fragment implements RecyclerViewChipList.RecyclerChipViewServiceListener
+        , RecyclerViewAdapterClientData.RecyclerViewClientService {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
     private String mParam1;
     private String mParam2;
-//    private FragmentVenueUserBinding binding;
+    //    private FragmentVenueUserBinding binding;
     private Context context;
     private FragmentVenueUserBinding binding;
     private RecyclerViewChipList recyclerviewChipListAdapter;
@@ -49,6 +52,7 @@ public class ServiceUserFragment extends Fragment implements RecyclerViewChipLis
     private FirebaseFirestore firebaseFirestore;
     private RecyclerViewAdapterClientData recyclerViewAdapterClientData;
     private Fragment fragment;
+    private FirebaseAuth firebaseAuth;
 
     public static ServiceUserFragment newInstance(String param1, String param2) {
         ServiceUserFragment fragment = new ServiceUserFragment();
@@ -76,7 +80,7 @@ public class ServiceUserFragment extends Fragment implements RecyclerViewChipLis
         context = view.getContext();
 
 //        default configuration when fragment will load
-        defaultConfiguration ();
+        defaultConfiguration();
 
         for (Fragment fragment : getActivity().getSupportFragmentManager().getFragments()) {
             if (fragment instanceof RecyclerViewChipList.RecyclerChipViewServiceListener) {
@@ -101,38 +105,40 @@ public class ServiceUserFragment extends Fragment implements RecyclerViewChipLis
         return view;
     }
 
-    public void defaultConfiguration () {
+    public void defaultConfiguration() {
         firebaseFirestore = FirebaseFirestore.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
         firebaseFirestore.collection("Service").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                     ServicePlanner servicePlanner = documentSnapshot.toObject(ServicePlanner.class);
-                    if (servicePlanner.getServiceParentCategory().equals("Travel") && servicePlanner.getServiceChildCategory().equals("luxury")) {
+                    if (servicePlanner.getServiceParentCategory().equals("Travel") && servicePlanner.getServiceChildCategory().equals("Affordable") && servicePlanner.isApproved() == false) {
                         defaultContentList.add(servicePlanner);
-                        //  load content fragment
-                        recyclerViewAdapterClientData = new RecyclerViewAdapterClientData(getContext(), defaultContentList, "service", getActivity());
-                        LinearLayoutManager layoutManagerContentList = new LinearLayoutManager(context);
-                        layoutManagerContentList.setOrientation(LinearLayoutManager.VERTICAL);
-                        binding.listRecyclerView.setLayoutManager(layoutManagerContentList);
-                        binding.listRecyclerView.setAdapter(recyclerViewAdapterClientData);
                     }
                 }
+                defaultContentList.size();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                recyclerViewAdapterClientData = new RecyclerViewAdapterClientData(getContext(), defaultContentList, "service", fragment, getActivity());
+                LinearLayoutManager layoutManagerContentList = new LinearLayoutManager(context);
+                layoutManagerContentList.setOrientation(LinearLayoutManager.VERTICAL);
+                binding.listRecyclerView.setLayoutManager(layoutManagerContentList);
+                binding.listRecyclerView.setAdapter(recyclerViewAdapterClientData);
             }
         });
     }
-    
-    public void testToast () {
-        Toast.makeText(context, "test value", Toast.LENGTH_SHORT).show();
-    }
 
-    public void getDataFromFirebase (String text) {
+    public void getDataFromFirebase(String text) {
         List<ServicePlanner> servicePlanners = new ArrayList<>();
         firebaseFirestore.collection("Service").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
-                    if (queryDocumentSnapshot.toObject(ServicePlanner.class).getServiceChildCategory().equals(text)) {
+                    ServicePlanner servicePlanner = queryDocumentSnapshot.toObject(ServicePlanner.class);
+                    if (servicePlanner.getServiceChildCategory().equals(text) && servicePlanner.isApproved() == false) {
                         servicePlanners.add(queryDocumentSnapshot.toObject(ServicePlanner.class));
                     }
                 }
@@ -150,5 +156,13 @@ public class ServiceUserFragment extends Fragment implements RecyclerViewChipLis
     @Override
     public void chipTextService(String value) {
         getDataFromFirebase(value);
+    }
+
+    @Override
+    public void onBookedService(ServicePlanner servicePlanner) {
+//        store service planner data
+        Toast.makeText(context, "email: " + servicePlanner.getEmail(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "phone number: " + servicePlanner.getPhoneNumber(), Toast.LENGTH_SHORT).show();
+        firebaseFirestore.collection("Booked").document().set(new Booked(servicePlanner.getEmail(), servicePlanner.getPhoneNumber(), firebaseAuth.getCurrentUser().getEmail(), "service", servicePlanner.getServiceName(), servicePlanner.getServiceDescription(), String.valueOf(servicePlanner.getServicePrice()), servicePlanner.getServiceParentCategory(), servicePlanner.getServiceChildCategory()));
     }
 }

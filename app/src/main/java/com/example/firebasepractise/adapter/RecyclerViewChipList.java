@@ -40,7 +40,6 @@ public class RecyclerViewChipList extends RecyclerView.Adapter<RecyclerViewChipL
                 break;
             case "service":
                 serviceUserFragment = (ServiceUserFragment) fragment;
-                serviceUserFragment.testToast();
                 break;
         }
 //        recyclerViewSwitchListener = (RecyclerViewSwitchListener) fragmentActivity;

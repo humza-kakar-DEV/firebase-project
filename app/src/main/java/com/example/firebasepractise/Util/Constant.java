@@ -22,4 +22,6 @@ public class Constant {
     public static final String USER_ROLE = "UserRole";
     public static final String PLANS_TAG = "Plans";
     public static final String APPROVED_PLANS_TAG = "ApprovedPlans";
+    public static final String ROOT_FRAGMENT = "RootFragment";
+    public static final int RC_SIGN_IN = 1;
 }

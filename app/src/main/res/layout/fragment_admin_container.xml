@@ -4,18 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
-    tools:context=".fragment.UserFragment">
-
-    <!--    <androidx.recyclerview.widget.RecyclerView-->
-    <!--        android:id="@+id/recyclerView"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintHorizontal_bias="0.5"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent" />-->
+    tools:context=".fragment.admin.AdminFragmentContainer">
 
     <FrameLayout
         android:id="@+id/frameLayoutUser"
@@ -31,15 +20,15 @@
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:background="@color/custom_light_background"
+        app:itemHorizontalTranslationEnabled="true"
+        app:itemIconTint="@color/white"
+        app:itemRippleColor="@color/white"
+        app:itemTextColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:itemRippleColor="@color/purple_700"
-        app:itemHorizontalTranslationEnabled="true"
         app:layout_constraintHorizontal_bias="0.5"
-        android:background="@color/black"
-        app:itemIconTint="@color/purple_700"
-        app:itemTextColor="@color/purple_700"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_nav_menu"/>
+        app:menu="@menu/admin_bottom_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

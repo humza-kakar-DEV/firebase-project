@@ -16,11 +16,6 @@ import com.example.firebasepractise.fragment.ServiceUserFragment;
 import com.example.firebasepractise.fragment.VenueUserFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link PlannerFragmentContainer#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class PlannerFragmentContainer extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
@@ -52,8 +47,7 @@ public class PlannerFragmentContainer extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentPlannerContainerBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
@@ -72,7 +66,6 @@ public class PlannerFragmentContainer extends Fragment {
                 return false;
             }
         });
-
 
         return view;
     }

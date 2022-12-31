@@ -53,7 +53,6 @@ public class PlannerFragment extends Fragment {
     private FirebaseFirestore firebaseFirestore;
     private FirebaseStorage firebaseStorage;
     private FirebaseAuth firebaseAuth;
-
     private FragmentPlannerBinding binding;
 
     public PlannerFragment() {
@@ -81,7 +80,7 @@ public class PlannerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        
         binding = FragmentPlannerBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
         context = view.getContext();
@@ -151,11 +150,11 @@ public class PlannerFragment extends Fragment {
         return view;
     }
 
-//    storing image file to cloud storage callback from activity
+    //    storing image file to cloud storage callback from activity
     public void uploadImage(Uri imageUri) {
         this.imageUri = imageUri;
         documentUniqueId = firebaseFirestore.collection(Constant.PLANS_TAG).document().toString();
-            Glide
+        Glide
                 .with(context)
                 .load(imageUri)
                 .centerCrop()

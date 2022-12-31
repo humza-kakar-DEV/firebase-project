@@ -6,6 +6,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,16 +19,12 @@ import com.example.firebasepractise.R;
 import com.example.firebasepractise.Util.Utils;
 import com.example.firebasepractise.databinding.FragmentRegisterBinding;
 import com.example.firebasepractise.model.User;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link RegisterFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class RegisterFragment extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
@@ -40,6 +38,10 @@ public class RegisterFragment extends Fragment {
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore firebaseFirestore;
     private RegisterFragmentListener registerFragmentListener;
+    private String emailInput;
+    private String passwordInput;
+    private String usernameInput;
+    private String phoneNumber;
 
     public RegisterFragment() {
 
@@ -90,12 +92,13 @@ public class RegisterFragment extends Fragment {
         binding.signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String email = binding.emailEditText.getText().toString();
-                String password = binding.passwordEditText.getText().toString();
-                firebaseAuth.createUserWithEmailAndPassword(email, password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                if (!validateEmail() | !validatePassword() | !validateUsername() | !validatePhoneNumber()) {
+                    return;
+                }
+                firebaseAuth.createUserWithEmailAndPassword(emailInput, passwordInput).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        User user = new User(firebaseAuth.getCurrentUser().getUid(), email, role, "03320948032");
+                        User user = new User(firebaseAuth.getCurrentUser().getUid(), emailInput, role, phoneNumber);
                         firebaseFirestore.collection(role).document().set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
@@ -104,11 +107,74 @@ public class RegisterFragment extends Fragment {
                             }
                         });
                     }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("valuehamza", "onFailure: " + e.getMessage());
+                    }
                 });
             }
         });
 
         return view;
+    }
+
+    //    fields validation
+    private boolean validateEmail() {
+        emailInput = binding.textInputEmail.getEditText().getText().toString().trim();
+
+        if (emailInput.isEmpty()) {
+            binding.textInputEmail.setError("Field can't be empty");
+            return false;
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(emailInput).matches()) {
+            binding.textInputEmail.setError("Please enter a valid email address");
+            return false;
+        } else {
+            binding.textInputEmail.setError(null);
+            return true;
+        }
+    }
+
+    private boolean validateUsername() {
+        usernameInput = binding.textInputUsername.getEditText().getText().toString().trim();
+
+        if (usernameInput.isEmpty()) {
+            binding.textInputUsername.setError("Field can't be empty");
+            return false;
+        } else if (usernameInput.length() > 15) {
+            binding.textInputUsername.setError("Username too long");
+            return false;
+        } else {
+            binding.textInputUsername.setError(null);
+            return true;
+        }
+    }
+
+    private boolean validatePhoneNumber() {
+        phoneNumber = binding.textInputPhoneNumber.getEditText().getText().toString().trim();
+
+        if (phoneNumber.isEmpty()) {
+            binding.textInputPhoneNumber.setError("Field can't be empty");
+            return false;
+        } else {
+            binding.textInputPhoneNumber.setError(null);
+            return true;
+        }
+    }
+
+    private boolean validatePassword() {
+        passwordInput = binding.textInputPassword.getEditText().getText().toString().trim();
+
+        if (passwordInput.isEmpty()) {
+            binding.textInputPassword.setError("Field can't be empty");
+            return false;
+        } else if (!Utils.PASSWORD_PATTERN.matcher(passwordInput).matches()) {
+            binding.textInputPassword.setError("Password too weak");
+            return false;
+        } else {
+            binding.textInputPassword.setError(null);
+            return true;
+        }
     }
 
     @Override
