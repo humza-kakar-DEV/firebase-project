@@ -7,6 +7,8 @@ public class Booked {
     String plannerPhoneNumber;
     String userEmail;
     String type;
+    String imageUrl;
+    String date;
 
 //    service values
     String serviceName;
@@ -28,11 +30,13 @@ public class Booked {
 
     }
 
-    public Booked(String plannerEmail, String plannerPhoneNumber, String userEmail, String type, String serviceName, String serviceDescription, String servicePrice, String serviceParentCategory, String serviceChildCategory) {
+    public Booked(String plannerEmail, String plannerPhoneNumber, String userEmail, String type, String imageUrl, String date, String serviceName, String serviceDescription, String servicePrice, String serviceParentCategory, String serviceChildCategory) {
         this.plannerEmail = plannerEmail;
         this.plannerPhoneNumber = plannerPhoneNumber;
         this.userEmail = userEmail;
         this.type = type;
+        this.imageUrl = imageUrl;
+        this.date = date;
         this.serviceName = serviceName;
         this.serviceDescription = serviceDescription;
         this.servicePrice = servicePrice;
@@ -40,11 +44,13 @@ public class Booked {
         this.serviceChildCategory = serviceChildCategory;
     }
 
-    public Booked(String plannerEmail, String plannerPhoneNumber, String userEmail, String type, String venueName, String venueAddress, String venueSize, String venueRent, String venueGuests, String venueRooms, String venueWashrooms) {
+    public Booked(String plannerEmail, String plannerPhoneNumber, String userEmail, String type, String imageUrl, String date, String venueName, String venueAddress, String venueSize, String venueRent, String venueGuests, String venueRooms, String venueWashrooms) {
         this.plannerEmail = plannerEmail;
         this.plannerPhoneNumber = plannerPhoneNumber;
         this.userEmail = userEmail;
         this.type = type;
+        this.imageUrl = imageUrl;
+        this.date = date;
         this.venueName = venueName;
         this.venueAddress = venueAddress;
         this.venueSize = venueSize;
@@ -52,6 +58,22 @@ public class Booked {
         this.venueGuests = venueGuests;
         this.venueRooms = venueRooms;
         this.venueWashrooms = venueWashrooms;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getPlannerEmail() {

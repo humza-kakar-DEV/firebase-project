@@ -10,6 +10,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +20,13 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.firebasepractise.AuthType;
 import com.example.firebasepractise.R;
+import com.example.firebasepractise.Util.Constant;
 import com.example.firebasepractise.Util.Utils;
 import com.example.firebasepractise.databinding.FragmentVenueBinding;
 import com.example.firebasepractise.model.User;
 import com.example.firebasepractise.model.Venue;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -53,6 +57,7 @@ public class VenueFragment extends Fragment {
     private FirebaseAuth firebaseAuth;
     private FirebaseStorage firebaseStorage;
     private String imageUrl;
+    private GoogleSignInAccount googleSignInAccount;
 
     public VenueFragment() {
     }
@@ -86,6 +91,8 @@ public class VenueFragment extends Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseStorage = FirebaseStorage.getInstance();
 
+        googleSignInAccount = GoogleSignIn.getLastSignedInAccount(getContext());
+
         binding.selectDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -113,7 +120,7 @@ public class VenueFragment extends Fragment {
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
-                requireActivity().startActivityForResult(intent, 112);
+                requireActivity().startActivityForResult(intent, Constant.UPLOAD_IMAGE);
             }
         });
 
@@ -144,8 +151,8 @@ public class VenueFragment extends Fragment {
         binding.createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                //                uploading image
+                Log.d("myCheck", "onClick: " + fragmentImageUri);
+                //  uploading image
                 firebaseStorage.getReference("uploads").child(System.currentTimeMillis() + "." + Utils.getMimeType(context, fragmentImageUri)).putFile(fragmentImageUri)
                         .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
@@ -161,15 +168,20 @@ public class VenueFragment extends Fragment {
                             @Override
                             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                                 if (task.isSuccessful()) {
-
+                                    Toast.makeText(getContext(), "saved", Toast.LENGTH_SHORT).show();
                                     firebaseFirestore.collection("PlannerRole").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                         @Override
                                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                                             for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
                                                 User user = queryDocumentSnapshot.toObject(User.class);
-                                                if (user.getName().equals(firebaseAuth.getCurrentUser().getEmail())) {
-                                                    Toast.makeText(context, "founded", Toast.LENGTH_SHORT).show();
-                                                    email = user.getName();
+                                                String currentEmail;
+                                                if (googleSignInAccount != null) {
+                                                    currentEmail = googleSignInAccount.getEmail();
+                                                } else {
+                                                    currentEmail = firebaseAuth.getCurrentUser().getEmail();
+                                                }
+                                                if (user.getEmail().equals(currentEmail)) {
+                                                    email = user.getEmail();
                                                     phoneNumber = user.getPhoneNumber();
                                                 }
                                             }

@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,8 @@ import com.example.firebasepractise.Util.Utils;
 import com.example.firebasepractise.databinding.FragmentServiceBinding;
 import com.example.firebasepractise.model.ServicePlanner;
 import com.example.firebasepractise.model.User;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -72,6 +75,7 @@ public class ServiceFragment extends Fragment {
     private ServicePlanner servicePlanner;
     private FirebaseStorage firebaseStorage;
     private String imageUrl;
+    private GoogleSignInAccount googleSignInAccount;
 
     public ServiceFragment() {
     }
@@ -104,6 +108,8 @@ public class ServiceFragment extends Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseStorage = FirebaseStorage.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
+
+        googleSignInAccount = GoogleSignIn.getLastSignedInAccount(getContext());
 
         binding.spinnerChildCategory.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, new ArrayList<>(Arrays.asList("select category"))));
         binding.spinnerParentCategory.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, Utils.parentCategory));
@@ -176,7 +182,7 @@ public class ServiceFragment extends Fragment {
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
-                requireActivity().startActivityForResult(intent, 112);
+                requireActivity().startActivityForResult(intent, Constant.UPLOAD_IMAGE);
             }
         });
 
@@ -231,8 +237,14 @@ public class ServiceFragment extends Fragment {
                                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                                             for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
                                                 User user = queryDocumentSnapshot.toObject(User.class);
-                                                if (user.getName().equals(firebaseAuth.getCurrentUser().getEmail())) {
-                                                    email = user.getName();
+                                                String currentEmail;
+                                                if (googleSignInAccount != null) {
+                                                    currentEmail = googleSignInAccount.getEmail();
+                                                } else {
+                                                    currentEmail = firebaseAuth.getCurrentUser().getEmail();
+                                                }
+                                                if (user.getEmail().equals(currentEmail)) {
+                                                    email = user.getEmail();
                                                     phoneNumber = user.getPhoneNumber();
                                                 }
                                             }

@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.firebasepractise.R;
 import com.example.firebasepractise.Util.CustomAlertDialog;
 import com.example.firebasepractise.fragment.ServiceUserFragment;
@@ -22,6 +23,7 @@ import com.example.firebasepractise.fragment.VenueUserFragment;
 import com.example.firebasepractise.model.Booked;
 import com.example.firebasepractise.model.ServicePlanner;
 import com.example.firebasepractise.model.Venue;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,17 +54,29 @@ public class UserBookedRecyclerViewAdapter extends RecyclerView.Adapter<UserBook
             case "service":
                 holder.nameTextView.setText(booked.getServiceName());
                 holder.emailTextView.setText(booked.getPlannerEmail());
-                holder.dateTextView.setText("22 - 22 - 22");
+                holder.dateTextView.setText(booked.getDate());
                 holder.typeTextView.setText(booked.getType());
+                Glide
+                        .with(context)
+                        .load(booked.getImageUrl())
+                        .centerCrop()
+                        .placeholder(R.drawable.ic_baseline_cloud_upload_24)
+                        .into(holder.imageView);
                 break;
             case "venue":
                 holder.nameTextView.setText(booked.getVenueName());
                 holder.emailTextView.setText(booked.getPlannerEmail());
-                holder.dateTextView.setText("22 - 22 - 22");
+                holder.dateTextView.setText(booked.getDate());
                 holder.typeTextView.setText(booked.getType());
+                Glide
+                        .with(context)
+                        .load(booked.getImageUrl())
+                        .centerCrop()
+                        .placeholder(R.drawable.ic_baseline_cloud_upload_24)
+                        .into(holder.imageView);
                 break;
         }
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
+        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Booked clickedBook = bookedList.get(position);
@@ -91,7 +105,7 @@ public class UserBookedRecyclerViewAdapter extends RecyclerView.Adapter<UserBook
 
         TextView nameTextView, emailTextView, dateTextView, typeTextView;
         LinearLayout linearLayout;
-        CardView cardView;
+        RoundedImageView imageView;
 
         public MyRecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -100,8 +114,8 @@ public class UserBookedRecyclerViewAdapter extends RecyclerView.Adapter<UserBook
             emailTextView = itemView.findViewById(R.id.emailTextView);
             dateTextView = itemView.findViewById(R.id.dateTextView);
             typeTextView = itemView.findViewById(R.id.typeTextView);
-            cardView = itemView.findViewById(R.id.cardView);
             linearLayout = itemView.findViewById(R.id.linearLayout);
+            imageView = itemView.findViewById(R.id.imageView);
         }
     }
 

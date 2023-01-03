@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -90,6 +91,17 @@ public class LoginFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = FragmentLoginBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
+
+        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+//                Toast.makeText(context, intent.getStringExtra("val"), Toast.LENGTH_SHORT).show();
+                if (intent.getStringExtra("val") != null) {
+                    Log.d("sdfdsf", "onReceive: " + intent.getStringExtra("val"));
+                }
+            }
+        };
+        view.getRootView().getContext().registerReceiver(broadcastReceiver, new IntentFilter("com.example.firebasepractise.fragment.LoginFragment"));
 
         firebaseAuth = FirebaseAuth.getInstance();
 

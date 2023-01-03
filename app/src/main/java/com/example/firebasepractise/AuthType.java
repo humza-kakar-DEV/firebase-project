@@ -1,7 +1,6 @@
 package com.example.firebasepractise;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -25,6 +24,7 @@ import com.example.firebasepractise.Util.Utils;
 import com.example.firebasepractise.databinding.ActivityAuthTypeBinding;
 import com.example.firebasepractise.fragment.LoginFragment;
 import com.example.firebasepractise.fragment.RegisterFragment;
+import com.example.firebasepractise.fragment.SelectRoleFragment;
 import com.example.firebasepractise.fragment.UserContentContainerFragment;
 import com.example.firebasepractise.fragment.admin.AdminFragmentContainer;
 import com.example.firebasepractise.fragment.planner.PlannerFragmentContainer;
@@ -53,13 +53,13 @@ public class AuthType extends AppCompatActivity implements LoginFragment.LoginFr
     private UserContentContainerFragment venueUserFragment;
     private String role;
     private CommunicationInterface communicationInterface;
-    private int increment = 0;
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore firebaseFirestore;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private ImageUriInterface imageUriInterface;
     private GoogleSignInClient googleSignInClient;
     private GoogleSignInClient mGoogleSignInClient;
+    private GoogleSignInAccount googleSignInAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +74,11 @@ public class AuthType extends AppCompatActivity implements LoginFragment.LoginFr
 
         // Initialize sign in client
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
+
+        Intent intent = new Intent("com.example.firebasepractise.fragment.LoginFragment");
+        intent.putExtra("val", "abc");
+        sendBroadcast(intent);
 
         // drawer layout instance to toggle the menu icon to open
         // drawer and back button to close drawer
@@ -115,7 +120,10 @@ public class AuthType extends AppCompatActivity implements LoginFragment.LoginFr
         firebaseFirestore = FirebaseFirestore.getInstance();
 
         if (firebaseAuth.getCurrentUser() != null) {
-            checkCurrentUserRoleFromDatabase();
+            checkCurrentUserRoleWithUid(0);
+        } else if (googleSignInAccount != null) {
+//            Toast.makeText(this, "firebase auth user null", Toast.LENGTH_SHORT).show();
+            checkGoogleLoggedInUserInFirestoreWithEmail(googleSignInAccount, 0);
         } else {
             homeFragment();
         }
@@ -186,53 +194,32 @@ public class AuthType extends AppCompatActivity implements LoginFragment.LoginFr
 
     @Override
     public void setMainContentFragments() {
-        checkCurrentUserRoleFromDatabase();
+        checkCurrentUserRoleWithUid(0);
     }
 
     //    getting data recursive
-    public void checkCurrentUserRoleFromDatabase() {
+    public void checkCurrentUserRoleWithUid(int increment) {
+        if (increment > 2) {
+            return;
+        }
         firebaseFirestore.collection(Utils.roles.get(increment)).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
                     User user = queryDocumentSnapshot.toObject(User.class);
                     if (user.getUserId().equals(firebaseAuth.getCurrentUser().getUid())) {
-                        role = user.getType();
-                        switch (role) {
-                            case "PlannerRole":
-                                getSupportFragmentManager()
-                                        .beginTransaction()
-                                        .replace(frameLayout.getId(), PlannerFragmentContainer.newInstance(null, null))
-                                        .addToBackStack(null)
-                                        .commit();
-                                break;
-                            case "AdminRole":
-                                getSupportFragmentManager()
-                                        .beginTransaction()
-                                        .replace(frameLayout.getId(), AdminFragmentContainer.newInstance(null, null))
-                                        .addToBackStack(null)
-                                        .commit();
-                                break;
-                            case "UserRole":
-                                getSupportFragmentManager()
-                                        .beginTransaction()
-                                        .replace(frameLayout.getId(), UserContentContainerFragment.newInstance(null, null))
-                                        .addToBackStack(null)
-                                        .commit();
-                                break;
-                        }
+                        checkingRoleOfUser(user.getType());
                         return;
                     }
                 }
-                increment++;
-                checkCurrentUserRoleFromDatabase();
             }
         });
+        checkCurrentUserRoleWithUid(++increment);
     }
 
     @Override
     public void fromLoginFragmentCheckUser() {
-        checkCurrentUserRoleFromDatabase();
+        checkCurrentUserRoleWithUid(0);
     }
 
     public interface AuthTypeInterface {
@@ -242,21 +229,68 @@ public class AuthType extends AppCompatActivity implements LoginFragment.LoginFr
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
         if (requestCode == Constant.RC_SIGN_IN) {
-            // The Task returned from this call is always completed, no need to attach
-            // a listener.
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 // Signed in successfully, show authenticated UI.
                 Toast.makeText(this, "email: " + account.getEmail(), Toast.LENGTH_SHORT).show();
+                checkGoogleLoggedInUserInFirestoreWithEmail(account, 0);
             } catch (ApiException e) {
-                // The ApiException status code indicates the detailed failure reason.
-                // Please refer to the GoogleSignInStatusCodes class reference for more information.
-//                Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
-//                updateUI(null);
+                // Signed in unsuccessful update UI
             }
+        } else if (requestCode == Constant.UPLOAD_IMAGE) {
+            imageUriInterface.imageUri(data.getData());
+        }
+    }
+
+    public void checkGoogleLoggedInUserInFirestoreWithEmail(GoogleSignInAccount account, int increment) {
+        if (increment > 2) {
+            Log.d("myStart", "runned");
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(frameLayout.getId(), SelectRoleFragment.newInstance(null, null))
+                    .commit();
+            return;
+        }
+        firebaseFirestore.collection(Utils.roles.get(increment)).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
+                    User user = queryDocumentSnapshot.toObject(User.class);
+                    if (user.getEmail().equals(account.getEmail())) {
+                        checkingRoleOfUser(user.getType());
+                        return;
+                    }
+                }
+            }
+        });
+        checkGoogleLoggedInUserInFirestoreWithEmail(account, ++increment);
+    }
+
+    public void checkingRoleOfUser(String role) {
+        switch (role) {
+            case "PlannerRole":
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(frameLayout.getId(), PlannerFragmentContainer.newInstance(null, null))
+                        .addToBackStack(null)
+                        .commit();
+                break;
+            case "AdminRole":
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(frameLayout.getId(), AdminFragmentContainer.newInstance(null, null))
+                        .addToBackStack(null)
+                        .commit();
+                break;
+            case "UserRole":
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(frameLayout.getId(), UserContentContainerFragment.newInstance(null, null))
+                        .addToBackStack(null)
+                        .commit();
+                break;
         }
     }
 

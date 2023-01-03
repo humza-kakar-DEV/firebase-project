@@ -23,6 +23,8 @@ import com.example.firebasepractise.databinding.FragmentVenueUserBinding;
 import com.example.firebasepractise.model.Booked;
 import com.example.firebasepractise.model.ServicePlanner;
 import com.example.firebasepractise.model.Venue;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -60,6 +62,7 @@ public class VenueUserFragment extends Fragment implements RecyclerViewChipList.
     private VenueUserFragment venueUserFragment;
     private Fragment fragment;
     private FirebaseAuth firebaseAuth;
+    private GoogleSignInAccount googleSignInAccount;
 
     public VenueUserFragment() {
     }
@@ -106,6 +109,7 @@ public class VenueUserFragment extends Fragment implements RecyclerViewChipList.
 //        firebase fire store
         firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
+        googleSignInAccount = GoogleSignIn.getLastSignedInAccount(getContext());
 
 //        loading chips data
         firebaseFirestore.collection("Venue").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -182,6 +186,12 @@ public class VenueUserFragment extends Fragment implements RecyclerViewChipList.
     @Override
     public void onBookedVenue(Venue venue) {
 //        store booking data
-        firebaseFirestore.collection("Booked").document().set(new Booked(venue.getEmail(), venue.getPhoneNumber(), firebaseAuth.getCurrentUser().getEmail(), "venue", venue.getName(), venue.getAddress(), venue.getSize(), venue.getPerHourRent(), venue.getNoGuests(), venue.getAttachedRooms(), venue.getWashRooms()));
+        String email = null;
+        if (firebaseAuth.getCurrentUser() != null) {
+            email = firebaseAuth.getCurrentUser().getEmail();
+        } else if (googleSignInAccount != null) {
+            email = googleSignInAccount.getEmail();
+        }
+        firebaseFirestore.collection("Booked").document().set(new Booked(venue.getEmail(), venue.getPhoneNumber(), email, "venue", venue.getImageUrl(), venue.getDate(), venue.getName(), venue.getAddress(), venue.getSize(), venue.getPerHourRent(), venue.getNoGuests(), venue.getAttachedRooms(), venue.getWashRooms()));
     }
 }

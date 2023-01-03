@@ -98,19 +98,18 @@ public class RegisterFragment extends Fragment {
                 firebaseAuth.createUserWithEmailAndPassword(emailInput, passwordInput).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        User user = new User(firebaseAuth.getCurrentUser().getUid(), emailInput, role, phoneNumber);
+                        User user = new User(firebaseAuth.getCurrentUser().getUid(), usernameInput, role, phoneNumber, emailInput);
                         firebaseFirestore.collection(role).document().set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
                                 registerFragmentListener.setMainContentFragments();
-                                Toast.makeText(getContext(), "user created", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getContext(), "user created", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d("valuehamza", "onFailure: " + e.getMessage());
                     }
                 });
             }
@@ -168,13 +167,15 @@ public class RegisterFragment extends Fragment {
         if (passwordInput.isEmpty()) {
             binding.textInputPassword.setError("Field can't be empty");
             return false;
-        } else if (!Utils.PASSWORD_PATTERN.matcher(passwordInput).matches()) {
-            binding.textInputPassword.setError("Password too weak");
-            return false;
-        } else {
-            binding.textInputPassword.setError(null);
-            return true;
         }
+        return true;
+//        else if (!Utils.PASSWORD_PATTERN.matcher(passwordInput).matches()) {
+//            binding.textInputPassword.setError("Password too weak");
+//            return false;
+//        } else {
+//            binding.textInputPassword.setError(null);
+//            return true;
+//        }
     }
 
     @Override

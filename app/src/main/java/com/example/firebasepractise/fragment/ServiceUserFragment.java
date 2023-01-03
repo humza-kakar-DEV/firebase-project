@@ -21,6 +21,8 @@ import com.example.firebasepractise.adapter.RecyclerViewChipList;
 import com.example.firebasepractise.databinding.FragmentVenueUserBinding;
 import com.example.firebasepractise.model.Booked;
 import com.example.firebasepractise.model.ServicePlanner;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -53,6 +55,7 @@ public class ServiceUserFragment extends Fragment implements RecyclerViewChipLis
     private RecyclerViewAdapterClientData recyclerViewAdapterClientData;
     private Fragment fragment;
     private FirebaseAuth firebaseAuth;
+    private GoogleSignInAccount googleSignInAccount;
 
     public static ServiceUserFragment newInstance(String param1, String param2) {
         ServiceUserFragment fragment = new ServiceUserFragment();
@@ -108,6 +111,8 @@ public class ServiceUserFragment extends Fragment implements RecyclerViewChipLis
     public void defaultConfiguration() {
         firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
+        googleSignInAccount = GoogleSignIn.getLastSignedInAccount(getContext());
+
         firebaseFirestore.collection("Service").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -161,8 +166,12 @@ public class ServiceUserFragment extends Fragment implements RecyclerViewChipLis
     @Override
     public void onBookedService(ServicePlanner servicePlanner) {
 //        store service planner data
-        Toast.makeText(context, "email: " + servicePlanner.getEmail(), Toast.LENGTH_SHORT).show();
-        Toast.makeText(context, "phone number: " + servicePlanner.getPhoneNumber(), Toast.LENGTH_SHORT).show();
-        firebaseFirestore.collection("Booked").document().set(new Booked(servicePlanner.getEmail(), servicePlanner.getPhoneNumber(), firebaseAuth.getCurrentUser().getEmail(), "service", servicePlanner.getServiceName(), servicePlanner.getServiceDescription(), String.valueOf(servicePlanner.getServicePrice()), servicePlanner.getServiceParentCategory(), servicePlanner.getServiceChildCategory()));
+        String email = null;
+        if (firebaseAuth.getCurrentUser() != null) {
+            email = firebaseAuth.getCurrentUser().getEmail();
+        } else if (googleSignInAccount != null) {
+            email = googleSignInAccount.getEmail();
+        }
+        firebaseFirestore.collection("Booked").document().set(new Booked(servicePlanner.getEmail(), servicePlanner.getPhoneNumber(), email, "service", servicePlanner.getImageUrl(), servicePlanner.getDate(), servicePlanner.getServiceName(), servicePlanner.getServiceDescription(), String.valueOf(servicePlanner.getServicePrice()), servicePlanner.getServiceParentCategory(), servicePlanner.getServiceChildCategory()));
     }
 }

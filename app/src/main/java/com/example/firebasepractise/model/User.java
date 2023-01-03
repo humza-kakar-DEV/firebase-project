@@ -6,16 +6,26 @@ public class User {
     private String name;
     private String type;
     private String phoneNumber;
+    private String email;
 
     public User() {
 
     }
 
-    public User(String userId, String name, String type, String phoneNumber) {
+    public User(String userId, String name, String type, String phoneNumber, String email) {
         this.userId = userId;
         this.name = name;
         this.type = type;
         this.phoneNumber = phoneNumber;
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPhoneNumber() {

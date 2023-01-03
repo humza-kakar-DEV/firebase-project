@@ -5,18 +5,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.firebasepractise.R;
+import com.example.firebasepractise.Util.CustomAlertDialog;
+import com.example.firebasepractise.Util.ServiceVenueDialog;
 import com.example.firebasepractise.fragment.ServiceUserFragment;
 import com.example.firebasepractise.fragment.VenueUserFragment;
+import com.example.firebasepractise.model.Booked;
 import com.example.firebasepractise.model.ServicePlanner;
 import com.example.firebasepractise.model.Venue;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,11 +77,16 @@ public class RecyclerViewAdapterClientData extends RecyclerView.Adapter<Recycler
         switch (listType) {
             case "service":
                 ServicePlanner servicePlanner = (ServicePlanner) serviceList.get(position);
+                Glide
+                        .with(context)
+                        .load(servicePlanner.getImageUrl())
+                        .centerCrop()
+                        .placeholder(R.drawable.ic_baseline_cloud_upload_24)
+                        .into(holder.imageView);
                 holder.nameTextView.setText(servicePlanner.getServiceName());
+                holder.dateTextView.setText(servicePlanner.getDate());
                 holder.descriptionTextView.setText(servicePlanner.getServiceDescription());
-                holder.priceTextView.setText(String.valueOf(servicePlanner.getServicePrice()));
-                holder.parentTextView.setText(servicePlanner.getServiceParentCategory());
-                holder.childTextView.setText(servicePlanner.getServiceChildCategory());
+                holder.priceTextView.setText("Rs - " + String.valueOf(servicePlanner.getServicePrice()));
                 holder.book.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -82,21 +94,40 @@ public class RecyclerViewAdapterClientData extends RecyclerView.Adapter<Recycler
                         serviceUserFragment.onBookedService(servicePlannerClicked);
                     }
                 });
+                holder.serviceLinearLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ServicePlanner clickedService = serviceList.get(position);
+                        ServiceVenueDialog serviceVenueDialog = new ServiceVenueDialog(context, "service", clickedService);
+                        serviceVenueDialog.show();
+                    }
+                });
                 break;
             case "venue":
                 Venue venue = (Venue) venueList.get(position);
+                Glide
+                        .with(context)
+                        .load(venue.getImageUrl())
+                        .centerCrop()
+                        .placeholder(R.drawable.ic_baseline_cloud_upload_24)
+                        .into(holder.imageView);
                 holder.venueNameTextView.setText(venue.getName());
+                holder.dateTextView.setText(venue.getDate());
                 holder.addressTextView.setText(venue.getAddress());
-                holder.sizeTextView.setText(venue.getSize());
-                holder.perHourTextView.setText(venue.getPerHourRent());
-                holder.noOfGuestsTextView.setText(venue.getNoGuests());
-                holder.attachedRoomsTextView.setText(venue.getAttachedRooms());
-                holder.washroomsTextView.setText(venue.getAttachedRooms());
+                holder.perHourTextView.setText("Rs - " + venue.getPerHourRent());
                 holder.book.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Venue venueClicked = venueList.get(position);
                         venueUserFragment.onBookedVenue(venueClicked);
+                    }
+                });
+                holder.venueLinearLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Venue clickedVenue = venueList.get(position);
+                        ServiceVenueDialog serviceVenueDialog = new ServiceVenueDialog(context, "venue", clickedVenue);
+                        serviceVenueDialog.show();
                     }
                 });
                 break;
@@ -142,6 +173,10 @@ public class RecyclerViewAdapterClientData extends RecyclerView.Adapter<Recycler
 
         //        booking button same for both data types
         Button book;
+        RoundedImageView imageView;
+        TextView dateTextView;
+
+        LinearLayout serviceLinearLayout, venueLinearLayout;
 
         public MyRecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -150,20 +185,18 @@ public class RecyclerViewAdapterClientData extends RecyclerView.Adapter<Recycler
                     nameTextView = itemView.findViewById(R.id.nameTextView);
                     descriptionTextView = itemView.findViewById(R.id.descriptionTextView);
                     priceTextView = itemView.findViewById(R.id.priceTextView);
-                    parentTextView = itemView.findViewById(R.id.parentCategoryTextView);
-                    childTextView = itemView.findViewById(R.id.childCategoryTextView);
+                    serviceLinearLayout = itemView.findViewById(R.id.cardView);
                     break;
                 case "venue":
                     venueNameTextView = itemView.findViewById(R.id.venueNameTextView);
                     addressTextView = itemView.findViewById(R.id.addressTextView);
-                    sizeTextView = itemView.findViewById(R.id.sizeTextView);
                     perHourTextView = itemView.findViewById(R.id.perHourRentTextView);
-                    noOfGuestsTextView = itemView.findViewById(R.id.noOfGeustsTextView);
-                    attachedRoomsTextView = itemView.findViewById(R.id.attachedRoomsTextView);
-                    washroomsTextView = itemView.findViewById(R.id.washRoomsTextView);
+                    venueLinearLayout = itemView.findViewById(R.id.cardView);
                     break;
             }
             book = itemView.findViewById(R.id.bookButton);
+            imageView = itemView.findViewById(R.id.imageView);
+            dateTextView = itemView.findViewById(R.id.dateTextView);
         }
     }
 
