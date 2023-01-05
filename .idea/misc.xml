@@ -13,6 +13,7 @@
         <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/drawable/outline_background.xml" value="0.1595" />
         <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/drawable/pink_out_line.xml" value="0.1525" />
         <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/drawable/rounded_cornor_background.xml" value="0.189" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/drawable/rouned_cornor_background.xml" value="0.188" />
         <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/drawable/switch_background.xml" value="0.173" />
         <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/drawable/switch_custom_thumb.xml" value="0.182" />
         <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/drawable/switch_custom_track.xml" value="0.173" />
@@ -24,6 +25,7 @@
         <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/layout/activity_main_layout.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/layout/activity_register.xml" value="0.22" />
         <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/layout/admin_recycler_view_layout.xml" value="0.33" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/layout/bottom_dialog_fragment.xml" value="0.5" />
         <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/layout/custom_dialog_service_layout.xml" value="0.5" />
         <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/layout/custom_dialog_venue_layout.xml" value="0.5" />
         <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/layout/fragment_admin.xml" value="0.18072916666666666" />

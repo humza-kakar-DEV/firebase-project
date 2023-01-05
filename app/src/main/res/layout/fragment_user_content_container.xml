@@ -20,7 +20,7 @@
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@color/black"
+        android:background="@drawable/rouned_cornor_background"
         app:itemHorizontalTranslationEnabled="true"
         app:itemIconTint="@color/purple_700"
         app:itemRippleColor="@color/purple_700"

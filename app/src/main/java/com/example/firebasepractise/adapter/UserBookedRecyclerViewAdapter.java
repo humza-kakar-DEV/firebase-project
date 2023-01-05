@@ -33,10 +33,12 @@ public class UserBookedRecyclerViewAdapter extends RecyclerView.Adapter<UserBook
 
     private List<Booked> bookedList = new ArrayList<>();
     private Context context;
+    private FragmentActivity fragmentActivity;
 
-    public UserBookedRecyclerViewAdapter(List<Booked> bookedList, Context context) {
+    public UserBookedRecyclerViewAdapter(List<Booked> bookedList, Context context, FragmentActivity fragmentActivity) {
         this.context = context;
         this.bookedList = bookedList;
+        this.fragmentActivity = fragmentActivity;
     }
 
     @NonNull
@@ -84,6 +86,13 @@ public class UserBookedRecyclerViewAdapter extends RecyclerView.Adapter<UserBook
                 customAlertDialog.show();
             }
         });
+        holder.feedbackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                BottomSheetAdapter bottomSheet = new BottomSheetAdapter();
+                bottomSheet.show(fragmentActivity.getSupportFragmentManager(),bottomSheet.getTag());
+            }
+        });
     }
 
     @Override
@@ -106,6 +115,7 @@ public class UserBookedRecyclerViewAdapter extends RecyclerView.Adapter<UserBook
         TextView nameTextView, emailTextView, dateTextView, typeTextView;
         LinearLayout linearLayout;
         RoundedImageView imageView;
+        Button feedbackButton;
 
         public MyRecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -116,6 +126,7 @@ public class UserBookedRecyclerViewAdapter extends RecyclerView.Adapter<UserBook
             typeTextView = itemView.findViewById(R.id.typeTextView);
             linearLayout = itemView.findViewById(R.id.linearLayout);
             imageView = itemView.findViewById(R.id.imageView);
+            feedbackButton = itemView.findViewById(R.id.feedBackButton);
         }
     }
 

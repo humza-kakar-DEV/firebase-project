@@ -83,7 +83,7 @@ public class UserBookedFragment extends Fragment {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     bookedList.size();
-                    UserBookedRecyclerViewAdapter userBookedRecyclerViewAdapter = new UserBookedRecyclerViewAdapter(bookedList, getContext());
+                    UserBookedRecyclerViewAdapter userBookedRecyclerViewAdapter = new UserBookedRecyclerViewAdapter(bookedList, getContext(), getActivity());
                     LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
                     linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
                     binding.recyclerView.setLayoutManager(linearLayoutManager);

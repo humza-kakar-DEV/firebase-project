@@ -25,4 +25,17 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
+<!--    bottom sheet -->
+    <style name="AppBottomSheetDialogTheme"
+        parent="Theme.MaterialComponents.Light.BottomSheetDialog">
+
+        <item name="bottomSheetStyle">@style/CustomBottomSheetStyle</item>
+    </style>
+
+    <style name="CustomBottomSheetStyle"
+        parent="Widget.Design.BottomSheet.Modal">
+
+        <item name="android:background">@drawable/rouned_cornor_background</item>
+    </style>
+
 </resources>
