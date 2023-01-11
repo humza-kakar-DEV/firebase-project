@@ -75,7 +75,7 @@
 
                 <TextView
                     android:text="Rating"
-                    android:textSize="20dp"
+                    android:textSize="17dp"
                     android:textColor="@color/custom_dark_background"
                     android:fontFamily="@font/ubunturegular"
                     android:layout_marginRight="10dp"

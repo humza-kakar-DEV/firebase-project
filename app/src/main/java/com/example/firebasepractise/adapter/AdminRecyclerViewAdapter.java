@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -65,9 +67,16 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<AdminRecycler
         switch (listType) {
             case "Service":
                 ServicePlanner servicePlanner = servicePlannerList.get(position);
+                Glide
+                        .with(context)
+                        .load(servicePlanner.getImageUrl())
+                        .centerCrop()
+                        .placeholder(R.drawable.ic_baseline_cloud_upload_24)
+                        .into(holder.imageView);
                 holder.titleTextView.setText(servicePlanner.getServiceName());
-                holder.descriptionTextView.setText(servicePlanner.getServiceParentCategory());
-                holder.dateTextView.setText(servicePlanner.getServiceChildCategory());
+                holder.descriptionTextView.setText(servicePlanner.getServiceDescription());
+                holder.dateTextView.setText(servicePlanner.getDate());
+                holder.priceTextView.setText(String.valueOf(servicePlanner.getServicePrice()));
                 if (servicePlanner.isApproved()) {
                     holder.yes.setChecked(true);
                     holder.no.setChecked(false);
@@ -75,18 +84,31 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<AdminRecycler
                     holder.yes.setChecked(false);
                     holder.no.setChecked(true);
                 }
-//                Glide
-//                        .with(context)
-//                        .load(servicePlanner.getImageUrl())
-//                        .centerCrop()
-//                        .placeholder(R.drawable.ic_baseline_cloud_upload_24)
-//                        .into(holder.imageView);
+                holder.cardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(context, "clicked", Toast.LENGTH_SHORT).show();
+                    }
+                });
                 break;
             case "Venue":
                 Venue venue = venueList.get(position);
+                Glide
+                        .with(context)
+                        .load(venue.getImageUrl())
+                        .centerCrop()
+                        .placeholder(R.drawable.ic_baseline_cloud_upload_24)
+                        .into(holder.imageView);
+                holder.cardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(context, "clicked", Toast.LENGTH_SHORT).show();
+                    }
+                });
                 holder.titleTextView.setText(venue.getName());
                 holder.descriptionTextView.setText(venue.getAddress());
-                holder.dateTextView.setText(venue.getWashRooms());
+                holder.dateTextView.setText(venue.getDate());
+                holder.priceTextView.setText(venue.getPerHourRent());
                 if (venue.getApproved()) {
                     holder.yes.setChecked(true);
                     holder.no.setChecked(false);
@@ -117,11 +139,6 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<AdminRecycler
                         }
                         break;
                 }
-//                ServicePlanner clickedPlan = planList.get(position);
-//                if (holder.yes.isChecked()) {
-//                    clickedPlan.setApproved(true);
-//                    recyclerViewSwitchListener.onListen(plan);
-//                }
             }
         });
 
@@ -165,22 +182,25 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<AdminRecycler
 
     public class MyRecyclerViewHolder extends RecyclerView.ViewHolder {
 
-        TextView titleTextView, descriptionTextView, dateTextView;
+        TextView titleTextView, descriptionTextView, dateTextView, priceTextView;
         RadioGroup radioGroup;
         RadioButton yes;
         RadioButton no;
         ImageView imageView;
+        LinearLayout cardView;
 
         public MyRecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
 
             imageView = itemView.findViewById(R.id.imageView);
-            titleTextView = itemView.findViewById(R.id.titleTextView);
+            priceTextView = itemView.findViewById(R.id.priceTextView);
+            titleTextView = itemView.findViewById(R.id.nameTextView);
             descriptionTextView = itemView.findViewById(R.id.descriptionTextView);
             dateTextView = itemView.findViewById(R.id.dateTextView);
             radioGroup = itemView.findViewById(R.id.toggle);
             yes = itemView.findViewById(R.id.yes);
             no = itemView.findViewById(R.id.no);
+            cardView = itemView.findViewById(R.id.cardView);
         }
     }
 
@@ -189,8 +209,4 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<AdminRecycler
 
         void venueListener(Venue venue);
     }
-
-//    public interface RecyclerViewSwitchListener {
-//        void onListen (Plan plan);
-//    }
 }

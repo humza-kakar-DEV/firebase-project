@@ -34,11 +34,13 @@ public class UserBookedRecyclerViewAdapter extends RecyclerView.Adapter<UserBook
     private List<Booked> bookedList = new ArrayList<>();
     private Context context;
     private FragmentActivity fragmentActivity;
+    private String state;
 
-    public UserBookedRecyclerViewAdapter(List<Booked> bookedList, Context context, FragmentActivity fragmentActivity) {
+    public UserBookedRecyclerViewAdapter(List<Booked> bookedList, Context context, FragmentActivity fragmentActivity, String state) {
         this.context = context;
         this.bookedList = bookedList;
         this.fragmentActivity = fragmentActivity;
+        this.state = state;
     }
 
     @NonNull
@@ -54,28 +56,58 @@ public class UserBookedRecyclerViewAdapter extends RecyclerView.Adapter<UserBook
         Booked booked = bookedList.get(position);
         switch (booked.getType()) {
             case "service":
-                holder.nameTextView.setText(booked.getServiceName());
-                holder.emailTextView.setText(booked.getPlannerEmail());
-                holder.dateTextView.setText(booked.getDate());
-                holder.typeTextView.setText(booked.getType());
-                Glide
-                        .with(context)
-                        .load(booked.getImageUrl())
-                        .centerCrop()
-                        .placeholder(R.drawable.ic_baseline_cloud_upload_24)
-                        .into(holder.imageView);
+                if (state.equals("user")) {
+                    holder.feedbackButton.setVisibility(View.VISIBLE);
+                    holder.nameTextView.setText(booked.getServiceName());
+                    holder.emailTextView.setText(booked.getPlannerEmail());
+                    holder.dateTextView.setText(booked.getDate());
+                    holder.typeTextView.setText(booked.getType());
+                    Glide
+                            .with(context)
+                            .load(booked.getImageUrl())
+                            .centerCrop()
+                            .placeholder(R.drawable.ic_baseline_cloud_upload_24)
+                            .into(holder.imageView);
+                } else {
+                    holder.feedbackButton.setVisibility(View.GONE);
+                    holder.nameTextView.setText(booked.getPlannerEmail());
+                    holder.emailTextView.setText(booked.getUserEmail());
+                    holder.dateTextView.setText(booked.getPlannerPhoneNumber());
+                    holder.typeTextView.setText(booked.getType());
+                    Glide
+                            .with(context)
+                            .load(booked.getImageUrl())
+                            .centerCrop()
+                            .placeholder(R.drawable.ic_baseline_cloud_upload_24)
+                            .into(holder.imageView);
+                }
                 break;
             case "venue":
-                holder.nameTextView.setText(booked.getVenueName());
-                holder.emailTextView.setText(booked.getPlannerEmail());
-                holder.dateTextView.setText(booked.getDate());
-                holder.typeTextView.setText(booked.getType());
-                Glide
-                        .with(context)
-                        .load(booked.getImageUrl())
-                        .centerCrop()
-                        .placeholder(R.drawable.ic_baseline_cloud_upload_24)
-                        .into(holder.imageView);
+                if (state.equals("admin")) {
+                    holder.feedbackButton.setVisibility(View.VISIBLE);
+                    holder.nameTextView.setText(booked.getPlannerEmail());
+                    holder.emailTextView.setText(booked.getUserEmail());
+                    holder.dateTextView.setText(booked.getPlannerPhoneNumber());
+                    holder.typeTextView.setText(booked.getType());
+                    Glide
+                            .with(context)
+                            .load(booked.getImageUrl())
+                            .centerCrop()
+                            .placeholder(R.drawable.ic_baseline_cloud_upload_24)
+                            .into(holder.imageView);
+                } else {
+                    holder.feedbackButton.setVisibility(View.GONE);
+                    holder.nameTextView.setText(booked.getPlannerEmail());
+                    holder.emailTextView.setText(booked.getUserEmail());
+                    holder.dateTextView.setText(booked.getPlannerPhoneNumber());
+                    holder.typeTextView.setText(booked.getType());
+                    Glide
+                            .with(context)
+                            .load(booked.getImageUrl())
+                            .centerCrop()
+                            .placeholder(R.drawable.ic_baseline_cloud_upload_24)
+                            .into(holder.imageView);
+                }
                 break;
         }
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {

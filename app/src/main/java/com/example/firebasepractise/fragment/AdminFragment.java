@@ -17,11 +17,13 @@ import android.widget.Toast;
 import com.example.firebasepractise.R;
 import com.example.firebasepractise.Util.Constant;
 import com.example.firebasepractise.adapter.AdminRecyclerViewAdapter;
+import com.example.firebasepractise.adapter.UserBookedRecyclerViewAdapter;
 import com.example.firebasepractise.adapter.UserRecyclerViewAdapter;
 import com.example.firebasepractise.databinding.FragmentAdminBinding;
 import com.example.firebasepractise.databinding.FragmentAdminContainerBinding;
 import com.example.firebasepractise.fragment.admin.AdminFragmentContainer;
 import com.example.firebasepractise.fragment.admin.AdminServiceFragment;
+import com.example.firebasepractise.model.Booked;
 import com.example.firebasepractise.model.Plan;
 import com.example.firebasepractise.model.ServicePlanner;
 import com.example.firebasepractise.model.Venue;
@@ -48,23 +50,20 @@ public class AdminFragment extends Fragment implements AdminRecyclerViewAdapter.
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     private String listType;
 
-//    private List<ServicePlanner> servicePlannerList = new ArrayList<>();
-//    private List<Venue> venueList = new ArrayList<>();
-//    private List<?> typeList = new ArrayList<>();
-
     private List<ServicePlanner> servicePlannerList = new ArrayList<>();
     private List<Venue> venueList = new ArrayList<>();
+    private List<Booked> bookedList = new ArrayList<>();
 
     private RecyclerView recyclerView;
 
     private FirebaseFirestore firebaseFirestore;
     private FragmentAdminBinding binding;
     private AdminFragment adminFragment;
+    private UserBookedRecyclerViewAdapter userBookedRecyclerViewAdapter;
 
     public AdminFragment() {
     }
@@ -117,6 +116,9 @@ public class AdminFragment extends Fragment implements AdminRecyclerViewAdapter.
                         case "Venue":
                             venueList.add(queryDocumentSnapshot.toObject(Venue.class));
                             break;
+                        case "Booked":
+                            bookedList.add(queryDocumentSnapshot.toObject(Booked.class));
+                            break;
                     }
                 }
             }
@@ -128,13 +130,20 @@ public class AdminFragment extends Fragment implements AdminRecyclerViewAdapter.
                 switch (listType) {
                     case "Service":
                         adminRecyclerViewAdapter = new AdminRecyclerViewAdapter(getContext(), servicePlannerList, listType, adminFragment);
+                        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                        binding.recyclerView.setAdapter(adminRecyclerViewAdapter);
                         break;
                     case "Venue":
                         adminRecyclerViewAdapter = new AdminRecyclerViewAdapter(getContext(), venueList, listType, adminFragment);
+                        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                        binding.recyclerView.setAdapter(adminRecyclerViewAdapter);
+                        break;
+                    case "Booked":
+                        userBookedRecyclerViewAdapter = new UserBookedRecyclerViewAdapter(bookedList, getContext(), getActivity(), "admin");
+                        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                        binding.recyclerView.setAdapter(userBookedRecyclerViewAdapter);
                         break;
                 }
-                binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                binding.recyclerView.setAdapter(adminRecyclerViewAdapter);
             }
         });
 //        switch (listType) {
