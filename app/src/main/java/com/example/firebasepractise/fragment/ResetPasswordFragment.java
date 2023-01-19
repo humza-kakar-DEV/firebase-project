@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.example.firebasepractise.AuthType;
 import com.example.firebasepractise.R;
+import com.example.firebasepractise.adapter.LoadingAlertDialog;
 import com.example.firebasepractise.databinding.FragmentResetPasswordBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -61,6 +62,8 @@ public class ResetPasswordFragment extends Fragment {
         // Inflate the layout for this fragment
         binding  = FragmentResetPasswordBinding.inflate(inflater, container, false);
 
+        LoadingAlertDialog loadingAlertDialog = new LoadingAlertDialog(getContext());
+
         firebaseAuth = FirebaseAuth.getInstance();
 
         binding.resetButton.setOnClickListener(new View.OnClickListener() {
@@ -69,14 +72,19 @@ public class ResetPasswordFragment extends Fragment {
                 if (!validateEmail()) {
                     return;
                 }
+                loadingAlertDialog.show();
+                loadingAlertDialog.setCancelable(false);
                 firebaseAuth.sendPasswordResetEmail(emailInput).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
+                        loadingAlertDialog.dismiss();
                         Toast.makeText(getContext(), "check your inbox!", Toast.LENGTH_SHORT).show();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        loadingAlertDialog.dismiss();
+                        Toast.makeText(getContext(), "check email!", Toast.LENGTH_SHORT).show();
                         Log.d("myEmailSent", "onFailure: " + e.getMessage());
                     }
                 });

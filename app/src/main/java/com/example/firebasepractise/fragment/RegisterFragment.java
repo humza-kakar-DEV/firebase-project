@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.firebasepractise.R;
 import com.example.firebasepractise.Util.Utils;
+import com.example.firebasepractise.adapter.LoadingAlertDialog;
 import com.example.firebasepractise.databinding.FragmentRegisterBinding;
 import com.example.firebasepractise.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -73,6 +74,8 @@ public class RegisterFragment extends Fragment {
         binding = FragmentRegisterBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
+        LoadingAlertDialog loadingAlertDialog = new LoadingAlertDialog(getContext());
+
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
 
@@ -97,6 +100,8 @@ public class RegisterFragment extends Fragment {
                     return;
                 }
 
+                loadingAlertDialog.show();
+                loadingAlertDialog.setCancelable(false);
                 if (role.equals("AdminRole")) {
                     firebaseFirestore.collection("AdminRole").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                         @Override
@@ -109,6 +114,7 @@ public class RegisterFragment extends Fragment {
                                         firebaseFirestore.collection(role).document().set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void unused) {
+                                                loadingAlertDialog.dismiss();
                                                 registerFragmentListener.setMainContentFragments();
                                             }
                                         });
@@ -116,9 +122,11 @@ public class RegisterFragment extends Fragment {
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
+                                        loadingAlertDialog.dismiss();
                                     }
                                 });
                             } else {
+                                loadingAlertDialog.dismiss();
                                 Toast.makeText(getContext(), "Admin already exists!", Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -131,6 +139,7 @@ public class RegisterFragment extends Fragment {
                             firebaseFirestore.collection(role).document().set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
+                                    loadingAlertDialog.dismiss();
                                     registerFragmentListener.setMainContentFragments();
 //                                Toast.makeText(getContext(), "user created", Toast.LENGTH_SHORT).show();
                                 }
@@ -139,6 +148,7 @@ public class RegisterFragment extends Fragment {
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
+                            loadingAlertDialog.dismiss();
                         }
                     });
                 }
@@ -198,14 +208,13 @@ public class RegisterFragment extends Fragment {
             binding.textInputPassword.setError("Field can't be empty");
             return false;
         }
-        return true;
-//        else if (!Utils.PASSWORD_PATTERN.matcher(passwordInput).matches()) {
-//            binding.textInputPassword.setError("Password too weak");
-//            return false;
-//        } else {
-//            binding.textInputPassword.setError(null);
-//            return true;
-//        }
+        else if (!Utils.PASSWORD_PATTERN.matcher(passwordInput).matches()) {
+            binding.textInputPassword.setError("Password too weak");
+            return false;
+        } else {
+            binding.textInputPassword.setError(null);
+            return true;
+        }
     }
 
     @Override

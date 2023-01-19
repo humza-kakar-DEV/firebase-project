@@ -71,6 +71,8 @@ public class SelectRoleFragment extends Fragment {
         binding = FragmentSelectRoleBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
+        LoadingAlertDialog loadingAlertDialog = new LoadingAlertDialog(getContext());
+
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
 //      checking google auth currently sign in user
@@ -95,6 +97,8 @@ public class SelectRoleFragment extends Fragment {
                 if (!validateUsername()) {
                     return;
                 }
+                loadingAlertDialog.show();
+                loadingAlertDialog.setCancelable(false);
                 if (role.equals("AdminRole")) {
                     firebaseFirestore.collection("AdminRole").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                         @Override
@@ -105,10 +109,12 @@ public class SelectRoleFragment extends Fragment {
                                 firebaseFirestore.collection(role).document().set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
+                                        loadingAlertDialog.dismiss();
                                         ((AuthType) getActivity()).checkGoogleLoggedInUserInFirestoreWithEmail(googleSignInAccount, 0);
                                     }
                                 });
                             } else {
+                                loadingAlertDialog.dismiss();
                                 Toast.makeText(getContext(), "Admin already exists!", Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -119,6 +125,7 @@ public class SelectRoleFragment extends Fragment {
                     firebaseFirestore.collection(role).document().set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
+                            loadingAlertDialog.dismiss();
                             ((AuthType) getActivity()).checkGoogleLoggedInUserInFirestoreWithEmail(googleSignInAccount, 0);
                         }
                     });
