@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -16,11 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.firebasepractise.R;
-import com.example.firebasepractise.Util.CustomAlertDialog;
+import com.example.firebasepractise.Util.interfaces.JazzCashPaymentBottomSheetResponse;
 import com.example.firebasepractise.Util.ServiceVenueDialog;
 import com.example.firebasepractise.fragment.ServiceUserFragment;
 import com.example.firebasepractise.fragment.VenueUserFragment;
-import com.example.firebasepractise.model.Booked;
 import com.example.firebasepractise.model.ServicePlanner;
 import com.example.firebasepractise.model.Venue;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -38,6 +36,7 @@ public class RecyclerViewAdapterClientData extends RecyclerView.Adapter<Recycler
     private ServiceUserFragment serviceUserFragment;
     private VenueUserFragment venueUserFragment;
     private FragmentActivity fragmentActivity;
+    private JazzCashPaymentBottomSheetResponse jazzCashPaymentBottomSheetResponse;
 
     public RecyclerViewAdapterClientData(Context context, List<?> planList, String listType, Fragment fragment, FragmentActivity fragmentActivity) {
         this.context = context;
@@ -91,7 +90,14 @@ public class RecyclerViewAdapterClientData extends RecyclerView.Adapter<Recycler
                     @Override
                     public void onClick(View view) {
                         ServicePlanner servicePlannerClicked = serviceList.get(position);
-                        serviceUserFragment.onBookedService(servicePlannerClicked);
+                        jazzCashPaymentBottomSheetResponse = new JazzCashPaymentBottomSheetResponse() {
+                            @Override
+                            public void response() {
+                                serviceUserFragment.onBookedService(servicePlannerClicked);
+                            }
+                        };
+                        JazzCashPaymentBottomAdapter bottomSheet = new JazzCashPaymentBottomAdapter(jazzCashPaymentBottomSheetResponse);
+                        bottomSheet.show(fragmentActivity.getSupportFragmentManager(), bottomSheet.getTag());
                     }
                 });
                 holder.serviceLinearLayout.setOnClickListener(new View.OnClickListener() {
@@ -119,7 +125,14 @@ public class RecyclerViewAdapterClientData extends RecyclerView.Adapter<Recycler
                     @Override
                     public void onClick(View view) {
                         Venue venueClicked = venueList.get(position);
-                        venueUserFragment.onBookedVenue(venueClicked);
+                        jazzCashPaymentBottomSheetResponse = new JazzCashPaymentBottomSheetResponse() {
+                            @Override
+                            public void response() {
+                                venueUserFragment.onBookedVenue(venueClicked);
+                            }
+                        };
+                        JazzCashPaymentBottomAdapter bottomSheet = new JazzCashPaymentBottomAdapter(jazzCashPaymentBottomSheetResponse);
+                        bottomSheet.show(fragmentActivity.getSupportFragmentManager(), bottomSheet.getTag());
                     }
                 });
                 holder.venueLinearLayout.setOnClickListener(new View.OnClickListener() {

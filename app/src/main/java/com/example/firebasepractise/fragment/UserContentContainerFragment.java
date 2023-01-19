@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.firebasepractise.AuthType;
 import com.example.firebasepractise.R;
 import com.example.firebasepractise.databinding.FragmentServiceBinding;
 import com.example.firebasepractise.databinding.FragmentUserBinding;
@@ -55,6 +56,12 @@ public class UserContentContainerFragment extends Fragment {
         binding = FragmentUserBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
         context = view.getContext();
+
+//!       setting options menu to enable
+        ((AuthType) getActivity()).invokeOptions(true);
+
+//!        setting name of action bar on auth type activity
+        ((AuthType) getActivity()).getSupportActionBar().setTitle("User");
 
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frameLayoutUser, ServiceUserFragment.newInstance(null, null)).commit();
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {

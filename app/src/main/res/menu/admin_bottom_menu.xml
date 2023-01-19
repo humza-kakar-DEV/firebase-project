@@ -16,4 +16,9 @@
         android:title="Booked"
         android:icon="@drawable/ic_baseline_bookmark_added_24" />
 
+    <item
+        android:id="@+id/feedBack"
+        android:title="Feedback"
+        android:icon="@drawable/ic_baseline_feedback_24" />
+
 </menu>

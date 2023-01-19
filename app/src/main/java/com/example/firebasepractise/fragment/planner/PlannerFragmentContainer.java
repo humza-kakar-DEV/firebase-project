@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.firebasepractise.AuthType;
 import com.example.firebasepractise.R;
 import com.example.firebasepractise.databinding.FragmentPlannerContainerBinding;
 import com.example.firebasepractise.fragment.ServiceUserFragment;
@@ -50,6 +51,12 @@ public class PlannerFragmentContainer extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentPlannerContainerBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
+
+//!     setting option menu to disable
+        ((AuthType) getActivity()).invokeOptions(false);
+
+//!        setting name of action bar on auth type activity
+        ((AuthType) getActivity()).getSupportActionBar().setTitle("Planner");
 
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frameLayoutUser, ServiceFragment.newInstance(null, null)).commit();
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {

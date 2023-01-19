@@ -20,6 +20,7 @@ import com.example.firebasepractise.R;
 import com.example.firebasepractise.Util.CustomAlertDialog;
 import com.example.firebasepractise.fragment.ServiceUserFragment;
 import com.example.firebasepractise.fragment.VenueUserFragment;
+import com.example.firebasepractise.fragment.user.UserBookedFragment;
 import com.example.firebasepractise.model.Booked;
 import com.example.firebasepractise.model.ServicePlanner;
 import com.example.firebasepractise.model.Venue;
@@ -84,7 +85,7 @@ public class UserBookedRecyclerViewAdapter extends RecyclerView.Adapter<UserBook
                 break;
             case "venue":
                 if (state.equals("admin")) {
-                    holder.feedbackButton.setVisibility(View.VISIBLE);
+                    holder.feedbackButton.setVisibility(View.GONE);
                     holder.nameTextView.setText(booked.getPlannerEmail());
                     holder.emailTextView.setText(booked.getUserEmail());
                     holder.dateTextView.setText(booked.getPlannerPhoneNumber());
@@ -96,7 +97,7 @@ public class UserBookedRecyclerViewAdapter extends RecyclerView.Adapter<UserBook
                             .placeholder(R.drawable.ic_baseline_cloud_upload_24)
                             .into(holder.imageView);
                 } else {
-                    holder.feedbackButton.setVisibility(View.GONE);
+                    holder.feedbackButton.setVisibility(View.VISIBLE);
                     holder.nameTextView.setText(booked.getPlannerEmail());
                     holder.emailTextView.setText(booked.getUserEmail());
                     holder.dateTextView.setText(booked.getPlannerPhoneNumber());
@@ -118,13 +119,17 @@ public class UserBookedRecyclerViewAdapter extends RecyclerView.Adapter<UserBook
                 customAlertDialog.show();
             }
         });
+
         holder.feedbackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                BottomSheetAdapter bottomSheet = new BottomSheetAdapter();
-                bottomSheet.show(fragmentActivity.getSupportFragmentManager(),bottomSheet.getTag());
+//              bottom sheet fragment call
+                Booked feedBackBooked = bookedList.get(position);
+                BottomSheetAdapter bottomSheet = new BottomSheetAdapter(feedBackBooked);
+                bottomSheet.show(fragmentActivity.getSupportFragmentManager(), bottomSheet.getTag());
             }
         });
+
     }
 
     @Override
@@ -163,11 +168,15 @@ public class UserBookedRecyclerViewAdapter extends RecyclerView.Adapter<UserBook
     }
 
     public interface RecyclerViewClientService {
-        void onBookedService (ServicePlanner servicePlanner);
+        void onBookedService(ServicePlanner servicePlanner);
     }
 
     public interface RecyclerViewClientVenue {
-        void onBookedVenue (Venue venue);
+        void onBookedVenue(Venue venue);
+    }
+
+    public interface FeekBackInterface {
+        void feedBack();
     }
 }
 

@@ -4,12 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.util.Log;
 import android.util.Patterns;
@@ -19,15 +17,11 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.firebasepractise.AuthType;
-import com.example.firebasepractise.R;
-import com.example.firebasepractise.Util.CommunicationInterface;
 import com.example.firebasepractise.Util.Constant;
 import com.example.firebasepractise.Util.Utils;
 import com.example.firebasepractise.databinding.FragmentLoginBinding;
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInApi;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -35,14 +29,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.List;
-import java.util.Objects;
-
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link LoginFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class LoginFragment extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
@@ -92,18 +78,10 @@ public class LoginFragment extends Fragment {
         binding = FragmentLoginBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
-        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-//                Toast.makeText(context, intent.getStringExtra("val"), Toast.LENGTH_SHORT).show();
-                if (intent.getStringExtra("val") != null) {
-                    Log.d("sdfdsf", "onReceive: " + intent.getStringExtra("val"));
-                }
-            }
-        };
-        view.getRootView().getContext().registerReceiver(broadcastReceiver, new IntentFilter("com.example.firebasepractise.fragment.LoginFragment"));
-
         firebaseAuth = FirebaseAuth.getInstance();
+
+//!       setting options menu to disable
+        ((AuthType) getActivity()).invokeOptions(false);
 
 //        implementing google sign in
         binding.googleSignInButton.setOnClickListener(new View.OnClickListener() {
@@ -148,6 +126,18 @@ public class LoginFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 loginfragmentInterface.setRegisterFragment();
+            }
+        });
+        
+        binding.forgotPasswordTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(((AuthType) getActivity()).frameLayout.getId(), ResetPasswordFragment.newInstance(null, null))
+                        .addToBackStack(null)
+                        .commit();
             }
         });
 

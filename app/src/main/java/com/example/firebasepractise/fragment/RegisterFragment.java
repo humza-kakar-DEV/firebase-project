@@ -24,6 +24,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class RegisterFragment extends Fragment {
 
@@ -95,23 +96,52 @@ public class RegisterFragment extends Fragment {
                 if (!validateEmail() | !validatePassword() | !validateUsername() | !validatePhoneNumber()) {
                     return;
                 }
-                firebaseAuth.createUserWithEmailAndPassword(emailInput, passwordInput).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(AuthResult authResult) {
-                        User user = new User(firebaseAuth.getCurrentUser().getUid(), usernameInput, role, phoneNumber, emailInput);
-                        firebaseFirestore.collection(role).document().set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                registerFragmentListener.setMainContentFragments();
-//                                Toast.makeText(getContext(), "user created", Toast.LENGTH_SHORT).show();
+
+                if (role.equals("AdminRole")) {
+                    firebaseFirestore.collection("AdminRole").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            if (queryDocumentSnapshots.size() == 0) {
+                                firebaseAuth.createUserWithEmailAndPassword(emailInput, passwordInput).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                                    @Override
+                                    public void onSuccess(AuthResult authResult) {
+                                        User user = new User(firebaseAuth.getCurrentUser().getUid(), usernameInput, role, phoneNumber, emailInput);
+                                        firebaseFirestore.collection(role).document().set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                                registerFragmentListener.setMainContentFragments();
+                                            }
+                                        });
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                    }
+                                });
+                            } else {
+                                Toast.makeText(getContext(), "Admin already exists!", Toast.LENGTH_SHORT).show();
                             }
-                        });
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                    }
-                });
+                        }
+                    });
+                } else {
+                    firebaseAuth.createUserWithEmailAndPassword(emailInput, passwordInput).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                        @Override
+                        public void onSuccess(AuthResult authResult) {
+                            User user = new User(firebaseAuth.getCurrentUser().getUid(), usernameInput, role, phoneNumber, emailInput);
+                            firebaseFirestore.collection(role).document().set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    registerFragmentListener.setMainContentFragments();
+//                                Toast.makeText(getContext(), "user created", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                        }
+                    });
+                }
             }
         });
 

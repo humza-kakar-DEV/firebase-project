@@ -38,23 +38,9 @@
             android:orientation="vertical"
             android:padding="30dp">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/text_input_email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:errorEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Planner email"
-                    android:inputType="textEmailAddress" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
             <!--              validating username-->
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/text_input_username"
+                android:id="@+id/text_input_feedBack"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:counterEnabled="true"
@@ -93,7 +79,7 @@
 
 
             <Button
-                android:id="@+id/signInButton"
+                android:id="@+id/feedBackButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Send"

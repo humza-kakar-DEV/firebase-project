@@ -12,16 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.firebasepractise.AuthType;
-import com.example.firebasepractise.R;
-import com.example.firebasepractise.Util.CommunicationInterface;
 import com.example.firebasepractise.adapter.RecyclerViewAdapterClientData;
 import com.example.firebasepractise.adapter.RecyclerViewChipList;
-import com.example.firebasepractise.databinding.FragmentVenueBinding;
 import com.example.firebasepractise.databinding.FragmentVenueUser2Binding;
-import com.example.firebasepractise.databinding.FragmentVenueUserBinding;
 import com.example.firebasepractise.model.Booked;
-import com.example.firebasepractise.model.ServicePlanner;
 import com.example.firebasepractise.model.Venue;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -35,7 +29,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -137,7 +130,7 @@ public class VenueUserFragment extends Fragment implements RecyclerViewChipList.
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                     Venue venue = documentSnapshot.toObject(Venue.class);
-                    if (venue.getApproved() == false) {
+                    if (venue.getApproved() == true) {
                         defaultContentList.add(venue);
                     }
                 }
@@ -163,7 +156,7 @@ public class VenueUserFragment extends Fragment implements RecyclerViewChipList.
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
                     Venue venue = queryDocumentSnapshot.toObject(Venue.class);
-                    if (venue.getName().equals(text) && venue.getApproved() == false) {
+                    if (venue.getName().equals(text) && venue.getApproved() == true) {
                         venueList.add(queryDocumentSnapshot.toObject(Venue.class));
                     }
                 }
@@ -192,6 +185,14 @@ public class VenueUserFragment extends Fragment implements RecyclerViewChipList.
         } else if (googleSignInAccount != null) {
             email = googleSignInAccount.getEmail();
         }
-        firebaseFirestore.collection("Booked").document().set(new Booked(venue.getEmail(), venue.getPhoneNumber(), email, "venue", venue.getImageUrl(), venue.getDate(), venue.getName(), venue.getAddress(), venue.getSize(), venue.getPerHourRent(), venue.getNoGuests(), venue.getAttachedRooms(), venue.getWashRooms()));
+        firebaseFirestore.collection("Booked").document().set(new Booked(venue.getEmail(), venue.getPhoneNumber(), email, "venue", venue.getImageUrl(), venue.getDate(), venue.getName(), venue.getAddress(), venue.getSize(), venue.getPerHourRent(), venue.getNoGuests(), venue.getAttachedRooms(), venue.getWashRooms()))
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(context, "Venue Booked", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 }

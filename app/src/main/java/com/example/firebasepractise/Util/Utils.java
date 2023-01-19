@@ -33,11 +33,11 @@ public class Utils {
 
     public static List<String> rating = new ArrayList<>(Arrays.asList("1" , "2" , "3" , "4"));
     public static List<String> roles = new ArrayList<>(Arrays.asList("PlannerRole", "AdminRole", "UserRole"));
-    public static List<String> parentCategory = new ArrayList<>(Arrays.asList("Travel", "Catering", "Decor", "DJ"));
+    public static List<String> parentCategory = new ArrayList<>(Arrays.asList("Travel", "Catering", "Decor", "Entertainment"));
     public static List<String> travelItems = new ArrayList<>(Arrays.asList("Affordable", "economical", "luxury"));
     public static List<String> cateringItems = new ArrayList<>(Arrays.asList("Desert", "Dinner", "Break fast"));
     public static List<String> decorItems = new ArrayList<>(Arrays.asList("Concert", "Birthday", "Marriage Ceremony"));
-    public static List<String> djItems = new ArrayList<>(Arrays.asList("Aslam Song Composer", "Hannan Song Writer", "Kaifi Song Marketer"));
+    public static List<String> djItems = new ArrayList<>(Arrays.asList("Movies", "Dramas", "Sports", "Meetup with friends"));
 
     public static void StatusBarColour(Activity activity, int id) {
         Window window = activity.getWindow();

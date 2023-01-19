@@ -7,70 +7,104 @@
     android:background="@color/black"
     tools:context=".fragment.LoginFragment">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="300dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/custom_light_background"
-        app:cardCornerRadius="10dp"
+        android:gravity="center"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <ImageView
+            android:id="@+id/appIconImageView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="50dp"
+            android:src="@mipmap/ic_launcher_round"
+            app:layout_constraintBottom_toTopOf="@+id/cardView4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:elevation="30dp"
-            android:padding="30dp">
+            android:id="@+id/cardView4"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/outline_background"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/text_input_email"
+            <LinearLayout
+                android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:errorEnabled="true">
+                android:layout_height="match_parent"
+                android:elevation="30dp"
+                android:orientation="vertical"
+                android:padding="30dp">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:inputType="textEmailAddress"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/text_input_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Email" />
+                    app:errorEnabled="true">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Email"
+                        android:inputType="textEmailAddress" />
 
-        <!--  validating username -->
-<!--            <com.google.android.material.textfield.TextInputLayout-->
-<!--                android:id="@+id/text_input_username"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                app:counterEnabled="true"-->
-<!--                app:counterMaxLength="15"-->
-<!--                app:errorEnabled="true">-->
+                </com.google.android.material.textfield.TextInputLayout>
 
-<!--                <com.google.android.material.textfield.TextInputEditText-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:hint="Username"-->
-<!--                    android:inputType="text" />-->
+                <!--  validating username -->
+                <!--            <com.google.android.material.textfield.TextInputLayout-->
+                <!--                android:id="@+id/text_input_username"-->
+                <!--                android:layout_width="match_parent"-->
+                <!--                android:layout_height="wrap_content"-->
+                <!--                app:counterEnabled="true"-->
+                <!--                app:counterMaxLength="15"-->
+                <!--                app:errorEnabled="true">-->
 
-<!--            </com.google.android.material.textfield.TextInputLayout>-->
+                <!--                <com.google.android.material.textfield.TextInputEditText-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:hint="Username"-->
+                <!--                    android:inputType="text" />-->
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/text_input_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:errorEnabled="true"
-                app:passwordToggleEnabled="true">
+                <!--            </com.google.android.material.textfield.TextInputLayout>-->
 
-                <com.google.android.material.textfield.TextInputEditText
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/text_input_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Password"
-                    android:inputType="textPassword" />
+                    app:errorEnabled="true"
+                    app:passwordToggleEnabled="true">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Password"
+                        android:inputType="textPassword" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/forgotPasswordTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginBottom="10dp"
+                    android:text="Forgot Password?"
+                    android:textStyle="bold" />
 
                 <Button
                     android:id="@+id/signInButton"
@@ -93,13 +127,15 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/passwordEditText" />
 
-            <com.google.android.gms.common.SignInButton
-                android:id="@+id/googleSignInButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                <com.google.android.gms.common.SignInButton
+                    android:id="@+id/googleSignInButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

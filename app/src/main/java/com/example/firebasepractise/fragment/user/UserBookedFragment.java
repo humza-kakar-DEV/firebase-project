@@ -1,5 +1,9 @@
 package com.example.firebasepractise.fragment.user;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,11 +13,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.firebasepractise.R;
 import com.example.firebasepractise.adapter.UserBookedRecyclerViewAdapter;
 import com.example.firebasepractise.databinding.FragmentUserBookedBinding;
 import com.example.firebasepractise.model.Booked;
+import com.example.firebasepractise.model.FeedBack;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -21,10 +27,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserBookedFragment extends Fragment {
+public class UserBookedFragment extends Fragment implements UserBookedRecyclerViewAdapter.FeekBackInterface {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -35,6 +42,9 @@ public class UserBookedFragment extends Fragment {
     private FragmentUserBookedBinding binding;
     private FirebaseFirestore firebaseFirestore;
     private List<Booked> bookedList = new ArrayList<>();
+    private UserBookedFragment userBookedFragment;
+    private IntentFilter intentFilter;
+    private BroadcastReceiver broadCastReceiver;
 
     public static UserBookedFragment newInstance(String param1, String param2) {
         UserBookedFragment fragment = new UserBookedFragment();
@@ -64,13 +74,57 @@ public class UserBookedFragment extends Fragment {
         binding = FragmentUserBookedBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
+        intentFilter = new IntentFilter("com.example.firebasepractise.feedBack");
+        broadCastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals("com.example.firebasepractise.feedBack")) {
+                    String feedBack = intent.getStringExtra("feedBackText");
+                    String ratingText = intent.getStringExtra("ratingText");
+                    Booked booked = (Booked) intent.getSerializableExtra("serializable");
+                    writeFeedBack(feedBack, ratingText, booked);
+                }
+            }
+        };
+
+        for (Fragment fragment : getActivity().getSupportFragmentManager().getFragments()) {
+            if (fragment instanceof UserBookedRecyclerViewAdapter.FeekBackInterface) {
+                userBookedFragment = (UserBookedFragment) fragment;
+            }
+        }
+
         firebaseFirestore = FirebaseFirestore.getInstance();
-        defaultConfiguration();
+        defaultConfiguration(userBookedFragment);
 
         return view;
     }
 
-    public void defaultConfiguration() {
+    public void writeFeedBack(String feedBackText, String rating, Booked booked) {
+        FeedBack feedBack = new FeedBack(booked.getPlannerEmail(), booked.getUserEmail(), feedBackText, rating);
+        firebaseFirestore.collection("FeedBack").document().set(feedBack)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(getContext(), "complete", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getContext().registerReceiver(broadCastReceiver, intentFilter);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getContext().unregisterReceiver(broadCastReceiver);
+    }
+
+    public void defaultConfiguration(UserBookedFragment userBookedFragment) {
         firebaseFirestore.collection("Booked").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -93,4 +147,8 @@ public class UserBookedFragment extends Fragment {
         });
     }
 
+    @Override
+    public void feedBack() {
+
+    }
 }

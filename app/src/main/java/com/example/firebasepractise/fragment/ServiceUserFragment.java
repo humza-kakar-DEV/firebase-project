@@ -7,15 +7,13 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.firebasepractise.AuthType;
-import com.example.firebasepractise.R;
-import com.example.firebasepractise.Util.CommunicationInterface;
+import com.example.firebasepractise.Util.interfaces.CommunicationInterface;
 import com.example.firebasepractise.adapter.RecyclerViewAdapterClientData;
 import com.example.firebasepractise.adapter.RecyclerViewChipList;
 import com.example.firebasepractise.databinding.FragmentVenueUserBinding;
@@ -35,7 +33,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 public class ServiceUserFragment extends Fragment implements RecyclerViewChipList.RecyclerChipViewServiceListener
         , RecyclerViewAdapterClientData.RecyclerViewClientService {
@@ -118,7 +115,7 @@ public class ServiceUserFragment extends Fragment implements RecyclerViewChipLis
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                     ServicePlanner servicePlanner = documentSnapshot.toObject(ServicePlanner.class);
-                    if (servicePlanner.getServiceParentCategory().equals("Travel") && servicePlanner.getServiceChildCategory().equals("Affordable") && servicePlanner.isApproved() == false) {
+                    if (servicePlanner.getServiceParentCategory().equals("Travel") && servicePlanner.getServiceChildCategory().equals("Affordable") && servicePlanner.isApproved() == true) {
                         defaultContentList.add(servicePlanner);
                     }
                 }
@@ -143,7 +140,7 @@ public class ServiceUserFragment extends Fragment implements RecyclerViewChipLis
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
                     ServicePlanner servicePlanner = queryDocumentSnapshot.toObject(ServicePlanner.class);
-                    if (servicePlanner.getServiceChildCategory().equals(text) && servicePlanner.isApproved() == false) {
+                    if (servicePlanner.getServiceChildCategory().equals(text) && servicePlanner.isApproved() == true) {
                         servicePlanners.add(queryDocumentSnapshot.toObject(ServicePlanner.class));
                     }
                 }
@@ -172,6 +169,16 @@ public class ServiceUserFragment extends Fragment implements RecyclerViewChipLis
         } else if (googleSignInAccount != null) {
             email = googleSignInAccount.getEmail();
         }
-        firebaseFirestore.collection("Booked").document().set(new Booked(servicePlanner.getEmail(), servicePlanner.getPhoneNumber(), email, "service", servicePlanner.getImageUrl(), servicePlanner.getDate(), servicePlanner.getServiceName(), servicePlanner.getServiceDescription(), String.valueOf(servicePlanner.getServicePrice()), servicePlanner.getServiceParentCategory(), servicePlanner.getServiceChildCategory()));
+
+        firebaseFirestore.collection("Booked").document().set(new Booked(servicePlanner.getEmail(), servicePlanner.getPhoneNumber(), email, "service", servicePlanner.getImageUrl(), servicePlanner.getDate(), servicePlanner.getServiceName(), servicePlanner.getServiceDescription(), String.valueOf(servicePlanner.getServicePrice()), servicePlanner.getServiceParentCategory(), servicePlanner.getServiceChildCategory()))
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(context, "Service Booked", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
+
 }

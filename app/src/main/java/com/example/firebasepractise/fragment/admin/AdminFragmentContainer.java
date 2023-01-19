@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.firebasepractise.AuthType;
 import com.example.firebasepractise.R;
 import com.example.firebasepractise.databinding.FragmentAdminBinding;
 import com.example.firebasepractise.databinding.FragmentAdminContainerBinding;
@@ -55,6 +56,12 @@ public class AdminFragmentContainer extends Fragment {
         binding = FragmentAdminContainerBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
+//!       setting options menu to disable
+        ((AuthType) getActivity()).invokeOptions(false);
+
+//!        setting name of action bar on auth type activity
+        ((AuthType) getActivity()).getSupportActionBar().setTitle("Admin");
+
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frameLayoutUser, AdminFragment.newInstance("Service")).commit();
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -68,6 +75,9 @@ public class AdminFragmentContainer extends Fragment {
                         break;
                     case R.id.userBooked:
                         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frameLayoutUser, AdminFragment.newInstance("Booked")).commit();
+                        break;
+                    case R.id.feedBack:
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frameLayoutUser, AdminFragment.newInstance("FeedBack")).commit();
                         break;
                 }
                 return false;

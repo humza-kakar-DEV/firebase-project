@@ -1,6 +1,8 @@
 package com.example.firebasepractise.model;
 
-public class Booked {
+import java.io.Serializable;
+
+public class Booked implements Serializable {
 
 //    planner and user details
     String plannerEmail;

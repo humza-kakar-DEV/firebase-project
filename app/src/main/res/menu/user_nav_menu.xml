@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/servicePlanner"
+        android:icon="@drawable/ic_baseline_miscellaneous_services_24"
+        android:title="Create Service" />
+    <item
+        android:id="@+id/venue"
+        android:icon="@drawable/ic_baseline_event_available_24"
+        android:title="Create Venue" />
+
+    <item
+        android:id="@+id/booked"
+        android:icon="@drawable/ic_baseline_bookmark_added_24"
+        android:title="Boooked" />
+
+</menu>

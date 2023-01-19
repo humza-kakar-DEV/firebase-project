@@ -27,6 +27,7 @@ import com.example.firebasepractise.AuthType;
 import com.example.firebasepractise.R;
 import com.example.firebasepractise.Util.Constant;
 import com.example.firebasepractise.Util.Utils;
+import com.example.firebasepractise.adapter.LoadingAlertDialog;
 import com.example.firebasepractise.databinding.FragmentServiceBinding;
 import com.example.firebasepractise.model.ServicePlanner;
 import com.example.firebasepractise.model.User;
@@ -59,7 +60,6 @@ public class ServiceFragment extends Fragment {
     private String mParam2;
     private FragmentServiceBinding binding;
     private Context context;
-    private List<String> spinnerList = new ArrayList<String>(Arrays.asList("Apple", "Banana", "Orange"));
     private FirebaseFirestore firebaseFirestore;
 
     private String parentCategory = "Travel";
@@ -111,6 +111,8 @@ public class ServiceFragment extends Fragment {
 
         googleSignInAccount = GoogleSignIn.getLastSignedInAccount(getContext());
 
+        LoadingAlertDialog loadingAlertDialog = new LoadingAlertDialog(getContext());
+
         binding.spinnerChildCategory.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, new ArrayList<>(Arrays.asList("select category"))));
         binding.spinnerParentCategory.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, Utils.parentCategory));
 
@@ -130,8 +132,8 @@ public class ServiceFragment extends Fragment {
                         parentCategory = "Decor";
                         binding.spinnerChildCategory.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, Utils.decorItems));
                         break;
-                    case "DJ":
-                        parentCategory = "DJ";
+                    case "Entertainment":
+                        parentCategory = "Entertainment";
                         binding.spinnerChildCategory.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, Utils.djItems));
                         break;
                 }
@@ -216,6 +218,8 @@ public class ServiceFragment extends Fragment {
                 if (!validateNameField() | !validateDescriptionField() | !validatePriceField()) {
                     return;
                 }
+                loadingAlertDialog.show();
+                loadingAlertDialog.setCancelable(false);
 //                uploading image
                 firebaseStorage.getReference("uploads").child(System.currentTimeMillis() + "." + Utils.getMimeType(context, fragmentImageUri)).putFile(fragmentImageUri)
                         .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -258,6 +262,7 @@ public class ServiceFragment extends Fragment {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                         if (task.isSuccessful()) {
+                                                            loadingAlertDialog.dismiss();
                                                             Toast.makeText(context, "data saved", Toast.LENGTH_SHORT).show();
                                                         }
                                                     }

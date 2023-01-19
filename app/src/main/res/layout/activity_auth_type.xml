@@ -9,59 +9,39 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!--        <com.google.android.material.appbar.MaterialToolbar-->
-        <!--            android:id="@+id/toolbar"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="?attr/actionBarSize"-->
-        <!--            android:background="@color/custom_dark_background"-->
-        <!--            app:layout_constraintEnd_toEndOf="parent"-->
-        <!--            app:layout_constraintHorizontal_bias="0.5"-->
-        <!--            app:layout_constraintStart_toStartOf="parent"-->
-        <!--            app:layout_constraintTop_toTopOf="parent">-->
+<!--                <com.google.android.material.appbar.MaterialToolbar-->
+<!--                    android:id="@+id/toolbar"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="?attr/actionBarSize"-->
+<!--                    android:background="@color/custom_dark_background"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintHorizontal_bias="0.5"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent">-->
 
-        <!--            <ImageView-->
-        <!--                android:layout_width="40dp"-->
-        <!--                android:layout_height="40dp"-->
-        <!--                android:src="@drawable/ic_baseline_sort_24" />-->
+<!--                    <ImageView-->
+<!--                        android:layout_width="40dp"-->
+<!--                        android:layout_height="40dp"-->
+<!--                        android:src="@drawable/ic_baseline_sort_24" />-->
 
-        <!--            <TextView-->
-        <!--                android:id="@+id/toolbar_title"-->
-        <!--                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"-->
-        <!--                android:layout_width="wrap_content"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:layout_gravity="center"-->
-        <!--                android:fontFamily="@font/ubunturegular"-->
-        <!--                android:text="@string/app_name"-->
-        <!--                android:textColor="@color/white"-->
-        <!--                android:textSize="25dp" />-->
+<!--                    <TextView-->
+<!--                        android:id="@+id/toolbar_title"-->
+<!--                        style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_gravity="center"-->
+<!--                        android:fontFamily="@font/ubunturegular"-->
+<!--                        android:text="@string/app_name"-->
+<!--                        android:textColor="@color/white"-->
+<!--                        android:textSize="25dp" />-->
 
-        <!--        </com.google.android.material.appbar.MaterialToolbar>-->
-
-        <Button
-            android:id="@+id/buttonPanel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="order"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <WebView
-            android:id="@+id/webView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+<!--                </com.google.android.material.appbar.MaterialToolbar>-->
 
         <FrameLayout
             android:id="@+id/frameLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

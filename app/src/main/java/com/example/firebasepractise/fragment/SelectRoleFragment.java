@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.example.firebasepractise.AuthType;
 import com.example.firebasepractise.R;
 import com.example.firebasepractise.Util.Utils;
+import com.example.firebasepractise.adapter.LoadingAlertDialog;
 import com.example.firebasepractise.databinding.FragmentSelectRoleBinding;
 import com.example.firebasepractise.model.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -26,6 +27,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class SelectRoleFragment extends Fragment {
 
@@ -93,14 +95,36 @@ public class SelectRoleFragment extends Fragment {
                 if (!validateUsername()) {
                     return;
                 }
+                if (role.equals("AdminRole")) {
+                    firebaseFirestore.collection("AdminRole").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            if (queryDocumentSnapshots.size() == 0) {
+                                //                create user in fire store database
+                                User user = new User(googleSignInAccount.getId(), googleSignInAccount.getDisplayName(), role, textInputPhoneNumber, googleSignInAccount.getEmail());
+                                firebaseFirestore.collection(role).document().set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        ((AuthType) getActivity()).checkGoogleLoggedInUserInFirestoreWithEmail(googleSignInAccount, 0);
+                                    }
+                                });
+                            } else {
+                                Toast.makeText(getContext(), "Admin already exists!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                } else {
+                    //                create user in fire store database
+                    User user = new User(googleSignInAccount.getId(), googleSignInAccount.getDisplayName(), role, textInputPhoneNumber, googleSignInAccount.getEmail());
+                    firebaseFirestore.collection(role).document().set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            ((AuthType) getActivity()).checkGoogleLoggedInUserInFirestoreWithEmail(googleSignInAccount, 0);
+                        }
+                    });
+                }
+
 //                create user in fire store database
-                User user = new User(googleSignInAccount.getId(), googleSignInAccount.getDisplayName(), role, textInputPhoneNumber, googleSignInAccount.getEmail());
-                firebaseFirestore.collection(role).document().set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        ((AuthType) getActivity()).checkGoogleLoggedInUserInFirestoreWithEmail(googleSignInAccount, 0);
-                    }
-                });
 
             }
         });

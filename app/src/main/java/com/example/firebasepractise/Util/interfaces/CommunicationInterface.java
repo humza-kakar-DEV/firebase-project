@@ -1,4 +1,4 @@
-package com.example.firebasepractise.Util;
+package com.example.firebasepractise.Util.interfaces;
 
 import java.util.List;
 

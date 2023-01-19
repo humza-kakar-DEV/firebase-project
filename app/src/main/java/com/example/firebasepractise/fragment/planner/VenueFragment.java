@@ -22,6 +22,7 @@ import com.example.firebasepractise.AuthType;
 import com.example.firebasepractise.R;
 import com.example.firebasepractise.Util.Constant;
 import com.example.firebasepractise.Util.Utils;
+import com.example.firebasepractise.adapter.LoadingAlertDialog;
 import com.example.firebasepractise.databinding.FragmentVenueBinding;
 import com.example.firebasepractise.model.User;
 import com.example.firebasepractise.model.Venue;
@@ -93,6 +94,8 @@ public class VenueFragment extends Fragment {
 
         googleSignInAccount = GoogleSignIn.getLastSignedInAccount(getContext());
 
+        LoadingAlertDialog loadingAlertDialog = new LoadingAlertDialog(getContext());
+
         binding.selectDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -151,8 +154,9 @@ public class VenueFragment extends Fragment {
         binding.createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("myCheck", "onClick: " + fragmentImageUri);
                 //  uploading image
+                loadingAlertDialog.show();
+                loadingAlertDialog.setCancelable(false);
                 firebaseStorage.getReference("uploads").child(System.currentTimeMillis() + "." + Utils.getMimeType(context, fragmentImageUri)).putFile(fragmentImageUri)
                         .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
@@ -202,6 +206,7 @@ public class VenueFragment extends Fragment {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                         if (task.isSuccessful()) {
+                                                            loadingAlertDialog.dismiss();
                                                             Toast.makeText(context, "data saved", Toast.LENGTH_SHORT).show();
                                                         }
                                                     }

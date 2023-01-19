@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.example.firebasepractise.R;
 import com.example.firebasepractise.Util.Constant;
 import com.example.firebasepractise.adapter.AdminRecyclerViewAdapter;
+import com.example.firebasepractise.adapter.FeedBackRecyclerView;
 import com.example.firebasepractise.adapter.UserBookedRecyclerViewAdapter;
 import com.example.firebasepractise.adapter.UserRecyclerViewAdapter;
 import com.example.firebasepractise.databinding.FragmentAdminBinding;
@@ -24,6 +25,7 @@ import com.example.firebasepractise.databinding.FragmentAdminContainerBinding;
 import com.example.firebasepractise.fragment.admin.AdminFragmentContainer;
 import com.example.firebasepractise.fragment.admin.AdminServiceFragment;
 import com.example.firebasepractise.model.Booked;
+import com.example.firebasepractise.model.FeedBack;
 import com.example.firebasepractise.model.Plan;
 import com.example.firebasepractise.model.ServicePlanner;
 import com.example.firebasepractise.model.Venue;
@@ -40,11 +42,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AdminFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class AdminFragment extends Fragment implements AdminRecyclerViewAdapter.RecyclerViewAdminListener {
 
     private static final String ARG_PARAM1 = "param1";
@@ -57,6 +54,7 @@ public class AdminFragment extends Fragment implements AdminRecyclerViewAdapter.
     private List<ServicePlanner> servicePlannerList = new ArrayList<>();
     private List<Venue> venueList = new ArrayList<>();
     private List<Booked> bookedList = new ArrayList<>();
+    private List<FeedBack> feedBackList = new ArrayList<>();
 
     private RecyclerView recyclerView;
 
@@ -64,6 +62,7 @@ public class AdminFragment extends Fragment implements AdminRecyclerViewAdapter.
     private FragmentAdminBinding binding;
     private AdminFragment adminFragment;
     private UserBookedRecyclerViewAdapter userBookedRecyclerViewAdapter;
+    private FeedBackRecyclerView feedbackRecyclerView;
 
     public AdminFragment() {
     }
@@ -119,6 +118,9 @@ public class AdminFragment extends Fragment implements AdminRecyclerViewAdapter.
                         case "Booked":
                             bookedList.add(queryDocumentSnapshot.toObject(Booked.class));
                             break;
+                        case "FeedBack":
+                            feedBackList.add(queryDocumentSnapshot.toObject(FeedBack.class));
+                            break;
                     }
                 }
             }
@@ -143,38 +145,14 @@ public class AdminFragment extends Fragment implements AdminRecyclerViewAdapter.
                         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                         binding.recyclerView.setAdapter(userBookedRecyclerViewAdapter);
                         break;
+                    case "FeedBack":
+                        feedbackRecyclerView = new FeedBackRecyclerView(getContext(), feedBackList);
+                        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                        binding.recyclerView.setAdapter(feedbackRecyclerView);
+                        break;
                 }
             }
         });
-//        switch (listType) {
-//            case "service":
-//
-//                break;
-//            case "venue":
-//                firebaseFirestore.collection("Venue").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-//                        for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
-//                            switch (listType) {
-//                                case "service":
-//                                    planList.add(queryDocumentSnapshot.toObject(Venue.class));
-//                                    break;
-//                                case "venue":
-//                                    planList.add(queryDocumentSnapshot.toObject(Venue.class));
-//                                    break;
-//                            }
-//                        }
-//                    }
-//                }).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                        AdminRecyclerViewAdapter adminRecyclerViewAdapter = new AdminRecyclerViewAdapter(getContext(), planList, listType, adminFragment);
-//                        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-//                        binding.recyclerView.setAdapter(adminRecyclerViewAdapter);
-//                    }
-//                });
-//                break;
-//        }
     }
 
     @Override
