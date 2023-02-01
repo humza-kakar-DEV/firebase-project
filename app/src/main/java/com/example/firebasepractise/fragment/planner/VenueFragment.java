@@ -38,7 +38,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class VenueFragment extends Fragment {
 
@@ -96,6 +101,14 @@ public class VenueFragment extends Fragment {
 
         LoadingAlertDialog loadingAlertDialog = new LoadingAlertDialog(getContext());
 
+//!     disabling date button
+        binding.selectDate.setVisibility(View.GONE);
+
+//!     get current date
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date calender = new Date();
+        date = dateFormat.format(calender).toString();
+
         binding.selectDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -130,13 +143,22 @@ public class VenueFragment extends Fragment {
         ((AuthType) getActivity()).imageUriInterfaceReference(new AuthType.ImageUriInterface() {
             @Override
             public void imageUri(Uri imageUri) {
-                fragmentImageUri = imageUri;
-                Glide
-                        .with(context)
-                        .load(imageUri)
-                        .centerCrop()
-                        .placeholder(R.drawable.ic_baseline_cloud_upload_24)
-                        .into(binding.imageView);
+                if (imageUri != null) {
+                    fragmentImageUri = imageUri;
+                    Glide
+                            .with(context)
+                            .load(imageUri)
+                            .centerCrop()
+                            .into(binding.imageView);
+                } else {
+                    Log.d("myImage", "imageUri: null");
+                    fragmentImageUri = Uri.parse("android.resource://com.example.firebasepractise/drawable/ic_baseline_cloud_upload_24");
+                    Glide
+                            .with(context)
+                            .load(R.drawable.ic_baseline_cloud_upload_24)
+                            .centerCrop()
+                            .into(binding.imageView);
+                }
             }
         });
 
@@ -157,7 +179,21 @@ public class VenueFragment extends Fragment {
                 //  uploading image
                 loadingAlertDialog.show();
                 loadingAlertDialog.setCancelable(false);
-                firebaseStorage.getReference("uploads").child(System.currentTimeMillis() + "." + Utils.getMimeType(context, fragmentImageUri)).putFile(fragmentImageUri)
+
+                //                uploading image
+                StorageReference storageReference = null;
+                if (fragmentImageUri != null) {
+                    storageReference = firebaseStorage.getReference("uploads").child(System.currentTimeMillis() + "." + Utils.getMimeType(context, fragmentImageUri));
+                } else {
+                    fragmentImageUri = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.drawable.black_background);
+                    Glide
+                            .with(context)
+                            .load(fragmentImageUri)
+                            .centerCrop()
+                            .into(binding.imageView);
+                    storageReference = firebaseStorage.getReference("uploads").child(System.currentTimeMillis() + "." + "png");
+                }
+                storageReference.putFile(fragmentImageUri)
                         .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {

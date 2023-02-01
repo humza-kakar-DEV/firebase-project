@@ -6,18 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".SplashScreenActivity">
 
-<!--    <TextView-->
-<!--        android:id="@+id/textView"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="EVANTO"-->
-<!--        android:textColor="#000000"-->
-<!--        android:textSize="20dp"-->
-<!--        android:textStyle="bold"-->
-<!--        app:layout_constraintEnd_toEndOf="@+id/imageView"-->
-<!--        app:layout_constraintStart_toStartOf="@+id/imageView"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/imageView" />-->
-
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="150dp"
@@ -28,19 +16,6 @@
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <!--    <ProgressBar-->
-    <!--        android:id="@+id/progressBar"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:background="@drawable/circle_background"-->
-    <!--        android:layout_centerInParent="true"-->
-    <!--        android:indeterminateTint="@color/white"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintHorizontal_bias="0.498"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@+id/imageView" />-->
 
     <TextView
         android:id="@+id/privacyPolicyTextView"

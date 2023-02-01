@@ -3,6 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/EventHandlingApplication/app/src/main/res/drawable/outline_background.xml" value="0.189" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/EventHandlingApplication/app/src/main/res/drawable/rounded_cornor_background.xml" value="0.189" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/EventHandlingApplication/app/src/main/res/layout/activity_splash_screen.xml" value="0.18072916666666666" />
+        <entry key="..\:/Users/lenovo/AndroidStudioProjects/EventHandlingApplication/app/src/main/res/layout/layout_test.xml" value="0.33" />
         <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/drawable/card_background.xml" value="0.141" />
         <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/drawable/card_view_background.xml" value="0.188" />
         <entry key="..\:/Users/lenovo/AndroidStudioProjects/FirebasePractise/app/src/main/res/drawable/circle_background.xml" value="0.2175" />

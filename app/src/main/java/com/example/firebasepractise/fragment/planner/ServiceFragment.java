@@ -3,12 +3,15 @@ package com.example.firebasepractise.fragment.planner;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.AnyRes;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -43,6 +46,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.net.UnknownServiceException;
@@ -209,7 +213,6 @@ public class ServiceFragment extends Fragment {
                         .with(context)
                         .load(imageUri)
                         .centerCrop()
-                        .placeholder(R.drawable.ic_baseline_cloud_upload_24)
                         .into(binding.imageView);
             }
         });
@@ -233,8 +236,22 @@ public class ServiceFragment extends Fragment {
                 }
                 loadingAlertDialog.show();
                 loadingAlertDialog.setCancelable(false);
+
 //                uploading image
-                firebaseStorage.getReference("uploads").child(System.currentTimeMillis() + "." + Utils.getMimeType(context, fragmentImageUri)).putFile(fragmentImageUri)
+                StorageReference storageReference = null;
+                if (fragmentImageUri != null) {
+                    storageReference = firebaseStorage.getReference("uploads").child(System.currentTimeMillis() + "." + Utils.getMimeType(context, fragmentImageUri));
+                } else {
+                    fragmentImageUri = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.drawable.black_background);
+                    Glide
+                            .with(context)
+                            .load(fragmentImageUri)
+                            .centerCrop()
+                            .into(binding.imageView);
+                    storageReference = firebaseStorage.getReference("uploads").child(System.currentTimeMillis() + "." + "png");
+                }
+
+                storageReference.putFile(fragmentImageUri)
                         .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -289,6 +306,15 @@ public class ServiceFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    public static final Uri getUriToResource(@NonNull Context context,
+                                             @AnyRes int resId)
+            throws Resources.NotFoundException {
+        /** Return a Resources instance for your application's package. */
+        Resources res = context.getResources();
+        Uri resUri = getUriToResource(context,resId);
+        return resUri;
     }
 
     private boolean validateNameField() {

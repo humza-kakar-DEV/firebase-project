@@ -26,6 +26,8 @@ import com.example.firebasepractise.model.Plan;
 import com.example.firebasepractise.model.ServicePlanner;
 import com.example.firebasepractise.model.Venue;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
